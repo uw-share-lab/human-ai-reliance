@@ -40,14 +40,33 @@ AITA-Data-Analysis/
 
 ### 1. Setup the Project
 
-Run the setup script to create all necessary directories and install dependencies:
+#### **Option A: Automated Setup (Recommended)**
 ```bash
+# Run the setup script to create directories and install dependencies
 python setup.py
 ```
-Or, do it manually:
+
+#### **Option B: Manual Setup with Virtual Environment**
 ```bash
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # On macOS/Linux
+# or: venv\Scripts\activate  # On Windows
+
+# Install dependencies
 pip install -r requirements.txt
-mkdir -p Data samples favorites
+
+# Create directories
+mkdir -p data samples favorites config
+```
+
+#### **Option C: Manual Setup without Virtual Environment**
+```bash
+# Install dependencies globally (not recommended)
+pip install -r requirements.txt
+
+# Create directories
+mkdir -p data samples favorites config
 ```
 
 ### 2. Add Your Data
@@ -136,6 +155,45 @@ Your selections will be saved in the `favorites/` directory.
 - TXT files are perfect for manual review and sharing with collaborators
 - YAML files store configuration and metadata for reproducibility
 - CSV files remain the primary format for data analysis
+
+## 🔧 Virtual Environment Management
+
+### **Creating a Virtual Environment**
+```bash
+# Create a new virtual environment
+python -m venv venv
+
+# Activate the virtual environment
+source venv/bin/activate  # On macOS/Linux
+# or: venv\Scripts\activate  # On Windows
+
+# Verify activation (you should see (venv) in your prompt)
+which python  # Should point to venv/bin/python
+```
+
+### **Working with the Virtual Environment**
+```bash
+# Install dependencies in the virtual environment
+pip install -r requirements.txt
+
+# Run scripts (make sure venv is activated)
+python explore_data.py
+python sample_data.py
+
+# Deactivate when done
+deactivate
+```
+
+### **Why Use Virtual Environments?**
+- **Isolation**: Prevents conflicts between project dependencies
+- **Reproducibility**: Ensures consistent environment across different machines
+- **Cleanup**: Easy to remove all project dependencies by deleting the venv folder
+- **Best Practice**: Standard practice for Python development
+
+### **Troubleshooting**
+- **If you see "command not found"**: Make sure the virtual environment is activated
+- **If packages aren't found**: Run `pip install -r requirements.txt` again
+- **To remove the environment**: Simply delete the `venv/` folder
 
 ## 📊 Script Details
 

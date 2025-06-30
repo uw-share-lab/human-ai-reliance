@@ -35,6 +35,16 @@ def install_dependencies():
     """Install Python dependencies"""
     print("\nInstalling Python dependencies...")
     
+    # Check if we're in a virtual environment
+    import sys
+    if hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix):
+        print("✅ Virtual environment detected")
+    else:
+        print("⚠️  No virtual environment detected. Consider creating one:")
+        print("   python -m venv venv")
+        print("   source venv/bin/activate  # On macOS/Linux")
+        print("   venv\\Scripts\\activate     # On Windows")
+    
     # Try to install using pip
     if run_command("pip install -r requirements.txt", "Installing dependencies with pip"):
         return True

@@ -88,7 +88,7 @@ def select_favorites():
     print("="*80)
     
     submission_count = 0
-    total_to_show = 10  # 2 from each of 5 tiers
+    total_to_show = 50
     
     for tier in ENGAGEMENT_TIERS:
         print(f"\n--- {tier.upper()} ENGAGEMENT TIER ---")
