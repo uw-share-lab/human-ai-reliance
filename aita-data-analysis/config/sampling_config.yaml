@@ -1,0 +1,72 @@
+# AITA Data Analysis - Sampling Configuration
+# This file contains all sampling parameters and configurations
+
+sampling:
+  # Predefined sample types
+  conservative:
+    max_submission_chars: 1000
+    max_comment_chars: 300
+    target_n: 30
+    oversample_factor: 5
+    comments_per_submission: 3
+    description: "Short content, small sample size - good for pilot studies"
+  
+  standard:
+    max_submission_chars: 2000
+    max_comment_chars: 500
+    target_n: 50
+    oversample_factor: 5
+    comments_per_submission: 3
+    description: "Balanced content length and sample size - recommended default"
+  
+  large:
+    max_submission_chars: 3000
+    max_comment_chars: 800
+    target_n: 100
+    oversample_factor: 5
+    comments_per_submission: 3
+    description: "Longer content, larger sample - comprehensive analysis"
+
+# Default parameters
+defaults:
+  max_submission_chars: 2000
+  max_comment_chars: 500
+  target_n: 50
+  oversample_factor: 5
+  comments_per_submission: 3
+  output_prefix: "sampled"
+
+# Engagement tier configuration
+engagement:
+  tiers:
+    - Very Low
+    - Low
+    - Medium
+    - High
+    - Very High
+  method: "quintile"  # Based on score quintiles
+  description: "Equal representation across popularity levels"
+
+# Output configuration
+output:
+  formats:
+    - csv
+    - txt
+    - yaml
+  directories:
+    data: "data"
+    samples: "samples"
+    favorites: "favorites"
+    config: "config"
+
+# File naming conventions
+files:
+  submissions: "submission.csv"
+  comments: "comment.csv"
+  sampled_submissions: "sampled_submissions.csv"
+  sampled_comments: "sampled_comments.csv"
+  favorite_submissions: "favorite_submissions.csv"
+  favorite_comments: "favorite_comments.csv"
+  metadata: "sampled_metadata.yaml"
+  review: "sampled_review.txt"
+  favorites_txt: "favorite_submissions.txt" 

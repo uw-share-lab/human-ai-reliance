@@ -2,7 +2,8 @@
 data/
 *.csv
 *.sqlite
-*.yaml
+# Allow config YAML files, but ignore data YAML files
+data/*.yaml
 
 # Generated samples
 samples/
