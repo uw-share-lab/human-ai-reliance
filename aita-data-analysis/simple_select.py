@@ -88,7 +88,7 @@ def select_favorites():
     print("="*80)
     
     submission_count = 0
-    total_to_show = 50
+    total_to_show = 20
     
     for tier in ENGAGEMENT_TIERS:
         print(f"\n--- {tier.upper()} ENGAGEMENT TIER ---")
@@ -129,15 +129,20 @@ def select_favorites():
         favorites_submissions = pd.DataFrame(selected_submissions)
         favorites_comments = pd.DataFrame(selected_comments)
         
+        # Create engagement subdirectory
+        engagement_favorites_dir = FAVORITES_DIR / "engagement"
+        engagement_favorites_dir.mkdir(exist_ok=True)
+        
         # Save files
-        submissions_file = FAVORITE_SUBMISSIONS_FILE
-        comments_file = FAVORITE_COMMENTS_FILE
+        submissions_file = engagement_favorites_dir / "engagement_favorite_submissions.csv"
+        comments_file = engagement_favorites_dir / "engagement_favorite_comments.csv"
         
         favorites_submissions.to_csv(submissions_file, index=False)
         favorites_comments.to_csv(comments_file, index=False)
         
         # Export to human-readable TXT format
-        export_to_txt(favorites_submissions, favorites_comments, FAVORITES_TXT_FILE, "FAVORITE SUBMISSIONS")
+        txt_file = engagement_favorites_dir / "engagement_favorite_submissions.txt"
+        export_to_txt(favorites_submissions, favorites_comments, txt_file, "ENGAGEMENT FAVORITE SUBMISSIONS")
         
         print(f"✅ Saved {len(favorites_submissions)} submissions to {submissions_file}")
         print(f"✅ Saved {len(favorites_comments)} comments to {comments_file}")

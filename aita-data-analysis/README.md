@@ -19,18 +19,39 @@ AITA-Data-Analysis/
 │   ├── sampled_comments.csv        # CSV format for analysis
 │   ├── sampled_review.txt          # Human-readable TXT format
 │   ├── sampled_metadata.yaml       # YAML metadata with statistics
-│   └── *_summary.txt               # Simple text summaries
+│   ├── *_summary.txt               # Simple text summaries
+│   ├── balanced/                   # Balanced sampling outputs
+│   │   ├── balanced_comments.csv   # Balanced comments with placeholder categories
+│   │   └── balanced_submissions.csv # Corresponding submission context
+│   └── verdict/                    # Verdict extraction outputs
+│       ├── verdict_all_verdicts.csv # All extracted verdicts
+│       ├── verdict_balanced_samples.csv # Balanced samples based on actual verdicts
+│       └── verdict_summary.txt     # Verdict distribution statistics
 │
 ├── favorites/                  # Manually selected favorites
-│   ├── favorite_submissions.csv    # CSV format for analysis
-│   ├── favorite_comments.csv       # CSV format for analysis
-│   └── favorite_submissions.txt    # Human-readable TXT format
+│   ├── engagement/                 # Engagement-based sampling favorites
+│   │   ├── engagement_favorite_submissions.csv # CSV format for analysis
+│   │   ├── engagement_favorite_comments.csv # CSV format for analysis
+│   │   └── engagement_favorite_submissions.txt # Human-readable TXT format
+│   ├── balanced/                   # Balanced sampling favorites
+│   │   ├── balanced_favorite_comments.csv # Balanced sample favorites
+│   │   ├── balanced_favorite_submissions.csv # Corresponding submission context
+│   │   └── balanced_favorite_comments.txt # Human-readable balanced favorites
+│   └── stratified/                 # Stratified sampling favorites
+│       ├── stratified_favorite_submissions.csv # Stratified sample favorites
+│       ├── stratified_favorite_comments.csv # All comments for stratified favorites
+│       └── stratified_favorite_submissions.txt # Human-readable stratified favorites
 │
 ├── Scripts
-│   ├── sample_data.py          # Main sampling script
+│   ├── sample_data.py          # Engagement-based sampling
 │   ├── explore_data.py         # Data exploration and analysis
 │   ├── preview_sample.py       # Preview sampled data
 │   ├── simple_select.py        # Interactive selection
+│   ├── extract_verdicts.py     # Verdict extraction and balanced sampling
+│   ├── select_balanced_favorites.py # Balanced sample selection
+│   ├── run_balanced_workflow.py # Complete balanced workflow
+│   ├── stratified_aita_sample.py # Stratified AITA sampling
+│   ├── select_stratified_favorites.py # Stratified sample selection
 │   └── reading_data.ipynb      # Jupyter notebook for data loading
 │
 └── README.md                   # This file
@@ -112,6 +133,147 @@ Your selections will be saved in the `favorites/` directory.
 
 ---
 
+## 🎯 Complete Workflow Examples
+
+### **Option A: Engagement-Based Sampling (Original Workflow)**
+
+This approach samples based on post popularity and engagement:
+
+```bash
+# 1. Explore your data
+python explore_data.py
+
+# 2. Generate engagement-based sample
+python sample_data.py --sample-type standard
+
+# 3. Preview the sample
+python preview_sample.py
+
+# 4. Select your favorites
+python simple_select.py
+```
+
+**Output**: `favorites/engagement/engagement_favorite_submissions.csv` and `favorites/engagement/engagement_favorite_comments.csv`
+
+### **Option B: Verdict-Based Sampling (New Balanced Workflow)**
+
+This approach creates balanced samples across verdict categories:
+
+```bash
+# 1. Run complete balanced workflow with interactive selection
+python run_balanced_workflow.py --interactive
+
+# OR run individual steps:
+
+# 2a. Extract verdicts and create balanced samples
+python extract_verdicts.py --sample-size 100000 --samples-per-category 10
+
+# 2b. Select your favorites from balanced samples
+python select_balanced_favorites.py
+```
+
+**Output**: `favorites/balanced/balanced_favorite_comments.csv` and `favorites/balanced/balanced_favorite_submissions.csv`
+
+### **Option C: Stratified AITA Sampling (New! - Submission-Focused)**
+
+This approach samples AITA submissions stratified by verdict, then lets you select your favorites:
+
+```bash
+# 1. Create stratified sample of submissions by verdict
+python stratified_aita_sample.py
+
+# 2. Select your favorite submissions from each verdict category
+python select_stratified_favorites.py
+```
+
+**Output**: `favorites/stratified/stratified_favorite_submissions.csv` and `favorites/stratified/stratified_favorite_comments.csv`
+
+**Key Features**:
+- Samples **submissions** (not comments) stratified by dominant verdict
+- Filters by length for manageable content
+- 5x oversampling for selection flexibility
+- Groups submissions by verdict category during selection
+- Includes all comments for selected submissions
+
+### **How Comments Connect to Favorites**
+
+**Engagement-Based Workflow:**
+- `sample_data.py` → creates `samples/sampled_submissions.csv` and `samples/sampled_comments.csv`
+- `simple_select.py` → reads from samples, lets you select submissions
+- Selected submissions + their top comments → saved to `favorites/engagement/`
+
+**Verdict-Based Workflow:**
+- `extract_verdicts.py` → creates `samples/verdict/verdict_balanced_samples.csv` + `samples/verdict/verdict_balanced_submissions.csv`
+- `select_balanced_favorites.py` → reads balanced samples, lets you select comments
+- Selected comments + their full AITA submission context → saved to `favorites/balanced/`
+
+**Stratified AITA Workflow:**
+- `stratified_aita_sample.py` → creates `samples/stratified/*_submissions.csv` + `samples/stratified/*_comments.csv`
+- `select_stratified_favorites.py` → reads stratified samples, lets you select submissions
+- Selected submissions + all their comments → saved to `favorites/stratified/`
+
+**Key Differences:**
+- Engagement workflow: You select **submissions**, get their **comments**
+- Verdict workflow: You select **comments**, get their **submission context**
+- Stratified workflow: You select **submissions**, get **all their comments**
+
+### **What You'll See During Selection**
+
+**Engagement-Based Selection (`simple_select.py`):**
+```
+SUBMISSION 1/20 - HIGH ENGAGEMENT TIER
+Title: AITA for refusing to babysit my nephew?
+Score: 1540
+TEXT: [Full submission text...]
+
+TOP COMMENTS:
+1. (Score: 45): NTA, it's not your responsibility...
+2. (Score: 32): You're absolutely right to say no...
+
+Select this submission? (y/n/q to quit):
+```
+
+**Verdict-Based Selection (`select_balanced_favorites.py`):**
+```
+COMMENT 1/6 - NOT THE ASSHOLE
+Comment ID: jmjed4l
+Submission ID: 13xix2x
+Score: 1
+Verdict: not the asshole
+
+COMMENT TEXT:
+NTA. Its not your child, not your responsibility...
+
+SUBMISSION CONTEXT:
+Title: AITA for denying my sister of babysitting my nephew?
+Score: 1540
+Submission Text: [First 300 characters...]
+
+Select this comment? (y/n/q to quit):
+```
+
+**Stratified Selection (`select_stratified_favorites.py`):**
+```
+SUBMISSION 1/90 - NOT THE ASSHOLE
+Submission ID: 13xix2x
+Title: AITA for denying my sister of babysitting my nephew?
+Score: 1540
+Dominant Verdict: not the asshole
+Verdict Count: 45
+Length: 1,247 characters
+
+AITA SUBMISSION:
+[Full submission text...]
+
+TOP COMMENTS (203 total):
+Comment (Score: 45): NTA, it's not your responsibility...
+Comment (Score: 32): You're absolutely right to say no...
+
+Select this submission? (y/n/q to quit):
+```
+
+---
+
 ## ⚙️ Customization
 
 - **Change sample size or filtering:**  
@@ -135,12 +297,24 @@ Your selections will be saved in the `favorites/` directory.
 ### **CSV Files** (For Analysis)
 - `samples/sampled_submissions.csv` — Sampled submissions with engagement metrics
 - `samples/sampled_comments.csv` — Top comments for each sampled submission
-- `favorites/favorite_submissions.csv` — Your manually selected submissions
-- `favorites/favorite_comments.csv` — Comments for your selected submissions
+- `favorites/engagement/engagement_favorite_submissions.csv` — Your manually selected submissions
+- `favorites/engagement/engagement_favorite_comments.csv` — Comments for your selected submissions
+
+**Balanced Sampling Files**:
+- `samples/verdict/verdict_all_verdicts.csv` — All extracted verdicts with metadata
+- `samples/verdict/verdict_balanced_samples.csv` — Balanced samples based on actual verdicts
+- `favorites/balanced/balanced_favorite_comments.csv` — Your selected favorites from balanced samples
+- `favorites/balanced/balanced_favorite_submissions.csv` — Corresponding submission context
+
+**Stratified Sampling Files**:
+- `samples/stratified/*_submissions.csv` — Stratified submissions by verdict category
+- `samples/stratified/*_comments.csv` — All comments for stratified submissions
+- `favorites/stratified/stratified_favorite_submissions.csv` — Your selected favorite submissions
+- `favorites/stratified/stratified_favorite_comments.csv` — All comments for selected submissions
 
 ### **TXT Files** (For Human Review)
 - `samples/sampled_review.txt` — Complete human-readable sample with all submissions and comments
-- `favorites/favorite_submissions.txt` — Your selected submissions in easy-to-read format
+- `favorites/engagement/engagement_favorite_submissions.txt` — Your selected submissions in easy-to-read format
 - `samples/*_summary.txt` — Simple text summaries of sampling statistics
 
 ### **YAML Files** (For Configuration & Metadata)
@@ -195,9 +369,68 @@ deactivate
 - **If packages aren't found**: Run `pip install -r requirements.txt` again
 - **To remove the environment**: Simply delete the `venv/` folder
 
+## 🎯 Sampling Approaches
+
+This system offers two complementary sampling approaches:
+
+### 1. Engagement-Based Sampling (Original)
+Uses `sample_data.py` to create stratified samples based on post engagement (score quintiles).
+
+### 2. Verdict-Based Sampling (New!)
+Creates balanced samples across verdict categories for fair analysis.
+
+#### Why Balanced Sampling?
+The AITA dataset has a natural imbalance in verdicts:
+- **not the asshole**: ~63% of comments
+- **asshole**: ~31% of comments  
+- **everyone sucks**: ~4% of comments
+- **no assholes here**: ~2% of comments
+
+Balanced sampling ensures equal representation across all verdict categories.
+
+#### Quick Start - Balanced Sampling
+```bash
+# Complete workflow with interactive selection
+python run_balanced_workflow.py --interactive
+
+# Custom parameters
+python run_balanced_workflow.py --samples-per-category 10 --max-comment-chars 500
+
+# Individual steps
+python extract_verdicts.py --sample-size 100000 --samples-per-category 10
+python select_balanced_favorites.py
+```
+
+#### When to Use Each Approach
+
+**Use Engagement-Based Sampling (`sample_data.py`) when:**
+- Studying community engagement patterns
+- Analyzing what makes posts popular
+- Researching content virality
+- Need diverse representation across popularity levels
+
+**Use Verdict-Based Sampling (`extract_verdicts.py`) when:**
+- Analyzing moral judgments and verdicts
+- Studying community decision-making
+- Need balanced representation across verdict categories
+- Researching bias in community judgments
+- Similar to your sexism study approach
+
+**Use Stratified AITA Sampling (`stratified_aita_sample.py`) when:**
+- Want to select **submissions** (not comments) as your primary unit
+- Need balanced representation across verdict categories
+- Want to see full AITA stories with all their comments
+- Studying narrative patterns in AITA submissions
+- Need submission-level analysis with complete comment context
+- Similar to paper examples that sample submissions stratified by category
+
+---
+
 ## 📊 Script Details
 
-### `sample_data.py` - Main Sampling Engine
+### Core Sampling Scripts
+
+#### `sample_data.py` - Engagement-Based Sampling
 
 **Purpose**: Creates stratified, balanced samples from large Reddit datasets.
 
@@ -273,6 +506,102 @@ python preview_sample.py
 ```bash
 python simple_select.py
 ```
+
+#### `extract_verdicts.py` - Verdict Extraction
+
+**Purpose**: Extracts actual verdicts from comments and creates balanced samples.
+
+**Features**:
+- Uses regex patterns to identify YTA, NTA, ESH, NAH in comment text
+- Creates truly balanced samples based on actual verdict distribution
+- Provides detailed statistics on verdict distribution
+- Filters by comment length for manageable samples
+
+**Usage**:
+```bash
+# Extract verdicts and create balanced samples
+python extract_verdicts.py --sample-size 100000 --samples-per-category 10
+
+# Custom parameters
+python extract_verdicts.py --sample-size 50000 --samples-per-category 15 --max-comment-chars 400
+```
+
+#### `select_balanced_favorites.py` - Balanced Sample Selection
+
+**Purpose**: Interactive selection from balanced verdict samples.
+
+**Features**:
+- Shows comments grouped by verdict category
+- Displays submission context for each comment
+- Allows manual selection of preferred comments
+- Saves selections in multiple formats
+
+**Usage**:
+```bash
+python select_balanced_favorites.py
+```
+
+#### `run_balanced_workflow.py` - Complete Workflow
+
+**Purpose**: One-command execution of the entire balanced sampling workflow.
+
+**Features**:
+- Automates verdict extraction and balanced sampling
+- Optional interactive selection
+- Customizable parameters
+- Comprehensive error handling
+
+**Usage**:
+```bash
+# Complete workflow with interactive selection
+python run_balanced_workflow.py --interactive
+
+# Custom parameters
+python run_balanced_workflow.py --samples-per-category 10 --max-comment-chars 500
+
+# Quick test
+python run_balanced_workflow.py --sample-size 10000 --samples-per-category 5
+```
+
+#### `stratified_aita_sample.py` - Stratified AITA Sampling
+
+**Purpose**: Creates stratified samples of AITA submissions balanced by verdict category.
+
+**Features**:
+- Samples **submissions** (not comments) stratified by dominant verdict
+- Filters by submission and comment length for manageable content
+- 5x oversampling for selection flexibility
+- Extracts verdicts from comments to categorize submissions
+- Balances samples across verdict categories (YTA, NTA, ESH, NAH)
+
+**Usage**:
+```bash
+# Default stratified sampling
+python stratified_aita_sample.py
+
+# Custom parameters
+python stratified_aita_sample.py --max-submission-chars 2000 --max-comment-chars 500 --oversample-factor 3
+```
+
+**Output**: Creates `samples/stratified/` directory with balanced submission samples.
+
+#### `select_stratified_favorites.py` - Stratified Sample Selection
+
+**Purpose**: Interactive selection from stratified AITA submission samples.
+
+**Features**:
+- Shows submissions grouped by verdict category
+- Displays full submission text with top comments
+- Allows manual selection of preferred submissions
+- Saves selections with all associated comments
+- Exports to human-readable TXT format
+
+**Usage**:
+```bash
+python select_stratified_favorites.py
+```
+
+**Output**: Creates `favorites/stratified/` directory with selected submissions and all their comments.
 
 ## 📈 Sampling Strategy
 
@@ -363,8 +692,8 @@ python sample_data.py --comments-per-submission 1
 - `*_submissions.csv`: Sampled submissions with engagement metrics
 - `*_comments.csv`: Top comments for each sampled submission
 - `*_summary.txt`: Detailed sampling statistics and distributions
-- `favorite_submissions.csv`: Manually selected submissions for analysis
-- `favorite_comments.csv`: Comments for selected submissions
+- `engagement_favorite_submissions.csv`: Manually selected submissions for analysis
+- `engagement_favorite_comments.csv`: Comments for selected submissions
 - `favorite_summary.txt`: Complete text and metadata for selected samples
 
 ### Summary Statistics
