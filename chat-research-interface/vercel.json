@@ -3,9 +3,9 @@
   "build": {
     "env": {
       "REACT_APP_OPENAI_API_KEY": "@openai_api_key",
-      "REACT_APP_SUPABASE_URL": "@supabase_url", 
+      "REACT_APP_SUPABASE_URL": "@supabase_url",
       "REACT_APP_SUPABASE_ANON_KEY": "@supabase_anon_key",
-      "REACT_APP_DEFAULT_TIMEOUT": "20"
+      "REACT_APP_DEFAULT_TIMEOUT": "5"
     }
   },
   "rewrites": [
@@ -19,7 +19,7 @@
       "source": "/(.*)",
       "headers": [
         {
-          "key": "X-Frame-Options", 
+          "key": "X-Frame-Options",
           "value": "ALLOWALL"
         },
         {

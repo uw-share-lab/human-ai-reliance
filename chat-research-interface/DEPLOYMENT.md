@@ -7,8 +7,9 @@ This guide covers deploying the **production-ready** Chat Research Interface to 
 ## ✅ Pre-Deployment Checklist
 
 Before deploying, ensure you have:
+
 - ✅ **Supabase Database**: Set up using `SUPABASE_SETUP.md`
-- ✅ **OpenAI API Key**: GPT-4 access for chat functionality  
+- ✅ **OpenAI API Key**: GPT-4 access for chat functionality
 - ✅ **GitHub Repository**: All code committed and pushed
 - ✅ **Vercel Account**: Free or paid plan
 - ✅ **Clean Codebase**: All unnecessary files removed
@@ -18,8 +19,9 @@ Before deploying, ensure you have:
 ### 1. Prepare Repository
 
 Ensure your repository includes:
+
 - All source code
-- `vercel.json` configuration file  
+- `vercel.json` configuration file
 - Updated `.env.example` (without actual keys)
 - Documentation files
 
@@ -33,7 +35,7 @@ git push origin main
 ### 2. Connect to Vercel
 
 1. **Sign up/Login**: Go to [vercel.com](https://vercel.com)
-2. **Import Project**: Click "Import Project" 
+2. **Import Project**: Click "Import Project"
 3. **Connect GitHub**: Authorize Vercel to access your repository
 4. **Select Repository**: Choose your chat-research-interface repo
 5. **Configure Project**: Vercel will auto-detect React settings
@@ -44,27 +46,29 @@ The `vercel.json` file references environment variables using Vercel's `@` synta
 
 **In Vercel Dashboard → Settings → Environment Variables:**
 
-| Variable Name | Value | Notes |
-|---------------|-------|-------|
-| `openai_api_key` | `sk-proj-your-actual-key` | ⚠️ Your OpenAI API key |
-| `supabase_url` | `https://your-project.supabase.co` | Your Supabase project URL |  
-| `supabase_anon_key` | `eyJhbGciOiJIUzI1NiIs...` | Your Supabase anonymous key |
+| Variable Name       | Value                              | Notes                       |
+| ------------------- | ---------------------------------- | --------------------------- |
+| `openai_api_key`    | `sk-proj-your-actual-key`          | ⚠️ Your OpenAI API key      |
+| `supabase_url`      | `https://your-project.supabase.co` | Your Supabase project URL   |
+| `supabase_anon_key` | `eyJhbGciOiJIUzI1NiIs...`          | Your Supabase anonymous key |
 
 **The `vercel.json` file maps these to React environment variables:**
+
 ```json
 {
   "build": {
     "env": {
       "REACT_APP_OPENAI_API_KEY": "@openai_api_key",
-      "REACT_APP_SUPABASE_URL": "@supabase_url", 
+      "REACT_APP_SUPABASE_URL": "@supabase_url",
       "REACT_APP_SUPABASE_ANON_KEY": "@supabase_anon_key",
-      "REACT_APP_DEFAULT_TIMEOUT": "20"
+      "REACT_APP_DEFAULT_TIMEOUT": "5"
     }
   }
 }
 ```
 
 **Security Notes:**
+
 - ✅ `vercel.json` is safe to commit (contains no secrets)
 - ✅ Environment variable references use `@` syntax (not actual values)
 - ✅ Actual secrets are stored securely in Vercel dashboard
@@ -109,8 +113,12 @@ Create a test Qualtrics survey:
 1. **HTML/CSS Question**: Add question type in Qualtrics
 2. **Iframe Embed**:
    ```html
-   <iframe src="https://your-project.vercel.app/scenario/aita-1?PROLIFIC_PID=${e://Field/PROLIFIC_PID}" 
-           width="100%" height="900px" frameborder="0">
+   <iframe
+     src="https://your-project.vercel.app/scenario/aita-1?PROLIFIC_PID=${e://Field/PROLIFIC_PID}"
+     width="100%"
+     height="900px"
+     frameborder="0"
+   >
    </iframe>
    ```
 3. **Test Survey**: Preview and complete a full conversation
@@ -119,6 +127,7 @@ Create a test Qualtrics survey:
 ### 3. Performance Testing
 
 Monitor key metrics:
+
 - Page load times (should be < 3 seconds)
 - AI response times (typically 2-5 seconds)
 - Database connection stability
@@ -142,9 +151,13 @@ For each scenario question:
 3. **HTML Content**:
    ```html
    <div style="width: 100%; height: 900px;">
-     <iframe src="https://your-domain.vercel.app/scenario/aita-1?PROLIFIC_PID=${e://Field/PROLIFIC_PID}&return_url=${e://Field/ReturnURL}" 
-             width="100%" height="100%" frameborder="0" 
-             style="border: none;">
+     <iframe
+       src="https://your-domain.vercel.app/scenario/aita-1?PROLIFIC_PID=${e://Field/PROLIFIC_PID}&return_url=${e://Field/ReturnURL}"
+       width="100%"
+       height="100%"
+       frameborder="0"
+       style="border: none;"
+     >
      </iframe>
    </div>
    ```
@@ -152,7 +165,8 @@ For each scenario question:
 ### Flow Logic
 
 Set up survey flow:
-1. **Consent & Demographics** 
+
+1. **Consent & Demographics**
 2. **Random Assignment** to scenario order
 3. **Scenario Questions** (embedded chat interface)
 4. **Post-Chat Questions** (reflection, demographics)
@@ -170,13 +184,15 @@ Set up survey flow:
 ### Application Monitoring
 
 Vercel provides built-in analytics:
+
 - **Function Logs**: Monitor API calls and errors
-- **Performance**: Track page load and response times  
+- **Performance**: Track page load and response times
 - **Usage**: Monitor bandwidth and request volume
 
 ### Research Data Monitoring
 
 Use Supabase dashboard:
+
 - **Table Editor**: View raw conversation data
 - **SQL Editor**: Run analytics queries
 - **API Logs**: Monitor database performance
@@ -185,28 +201,28 @@ Use Supabase dashboard:
 
 ```sql
 -- Daily participation rates
-SELECT 
+SELECT
   DATE(start_time) as date,
   COUNT(*) as total_sessions,
   COUNT(*) FILTER (WHERE completed_normally = true) as completed
-FROM conversations 
+FROM conversations
 GROUP BY DATE(start_time)
 ORDER BY date DESC;
 
 -- Average conversation length by scenario
-SELECT 
+SELECT
   scenario_id,
   AVG(duration_ms/60000) as avg_minutes,
   COUNT(*) as total_conversations
-FROM conversations 
+FROM conversations
 WHERE duration_ms IS NOT NULL
 GROUP BY scenario_id;
 
 -- Completion rates
-SELECT 
+SELECT
   study_type,
   ROUND(AVG(CASE WHEN completed_normally THEN 1 ELSE 0 END) * 100, 2) as completion_rate
-FROM conversations 
+FROM conversations
 GROUP BY study_type;
 ```
 
@@ -215,16 +231,19 @@ GROUP BY study_type;
 ### Common Deployment Issues
 
 **Build Failures:**
+
 - Check TypeScript errors in build logs
 - Verify all dependencies are listed in package.json
 - Ensure environment variables are set correctly
 
 **Runtime Errors:**
+
 - Monitor Function logs in Vercel dashboard
 - Check browser console on deployed site
 - Test API endpoints directly
 
 **Database Connection Issues:**
+
 - Verify Supabase environment variables
 - Check Supabase project status (not paused)
 - Test database queries in Supabase SQL editor
@@ -232,16 +251,19 @@ GROUP BY study_type;
 ### Qualtrics Embedding Issues
 
 **Iframe Not Loading:**
+
 - Check CORS headers in vercel.json
 - Verify X-Frame-Options configuration
 - Test outside of Qualtrics first
 
 **Data Not Saving:**
+
 - Monitor Supabase tables during test sessions
 - Check browser console for JavaScript errors
 - Verify Prolific ID is being passed correctly
 
 **Session Timeout Problems:**
+
 - Test with shorter timeouts for debugging
 - Check redirect URLs in survey flow
 - Verify timeout logic in browser developer tools
@@ -291,8 +313,10 @@ GROUP BY study_type;
 ## 🔍 Post-Deployment Verification
 
 ### **1. Deployment Success Check**
+
 After deployment completes:
-- ✅ Visit your Vercel deployment URL  
+
+- ✅ Visit your Vercel deployment URL
 - ✅ Home page loads without errors
 - ✅ All scenario URLs work: `your-domain.com/scenario/aita-1`
 - ✅ Prolific ID entry screen appears and functions
@@ -300,6 +324,7 @@ After deployment completes:
 - ✅ Verify data saves to Supabase tables
 
 ### **2. End-to-End Testing**
+
 ```bash
 # Test scenario access
 curl -I https://your-domain.vercel.app/scenario/aita-1
@@ -313,13 +338,15 @@ done
 ```
 
 ### **3. Qualtrics Integration Test**
+
 - ✅ Create test Qualtrics survey with iframe
-- ✅ Test Prolific ID persistence across scenarios  
+- ✅ Test Prolific ID persistence across scenarios
 - ✅ Verify conversation data appears in Supabase
 - ✅ Test timeout and redirect functionality
 - ✅ Confirm mobile responsiveness
 
 ### **4. Production Monitoring Setup**
+
 - Set up Vercel function monitoring
 - Configure Supabase database alerts
 - Monitor OpenAI API usage and billing
@@ -330,6 +357,7 @@ done
 ### Automated Backups
 
 Supabase provides:
+
 - Daily automated backups (7-day retention)
 - Point-in-time recovery (paid plans)
 - Real-time replication options
@@ -339,7 +367,7 @@ Supabase provides:
 ```sql
 -- Export all research data
 COPY (
-  SELECT 
+  SELECT
     c.*,
     json_agg(
       json_build_object(
@@ -366,6 +394,7 @@ COPY (
 Before launching your study:
 
 ### Technical Validation
+
 - [ ] All scenarios load correctly
 - [ ] Database connections stable
 - [ ] AI responses appropriate and consistent
@@ -373,7 +402,8 @@ Before launching your study:
 - [ ] Data appears in Supabase tables
 - [ ] Qualtrics embedding functions properly
 
-### Research Validation  
+### Research Validation
+
 - [ ] IRB approval obtained
 - [ ] Consent forms integrated
 - [ ] Data collection plan documented
@@ -381,6 +411,7 @@ Before launching your study:
 - [ ] Participant support contact available
 
 ### Performance Testing
+
 - [ ] Load testing with concurrent users
 - [ ] Response time monitoring
 - [ ] Error rate tracking
@@ -398,6 +429,7 @@ Before launching your study:
 ### Updates and Improvements
 
 To update your deployment:
+
 1. Make changes locally
 2. Test thoroughly in development
 3. Commit and push to main branch
