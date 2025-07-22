@@ -1,0 +1,21 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyd
+*.pyo
+*.pdb
+*.egg-info/
+dist/
+build/
+# CSVs and Excel files
+*.csv
+*.xls
+*.xlsx
+# txt and yamls
+*.txt
+*.yaml
+*.yml
+#env files
+.env
+#venv
+venv/
