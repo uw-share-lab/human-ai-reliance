@@ -363,26 +363,26 @@ Copy and paste these into your Qualtrics survey questions. Replace `your-deploym
 </div>
 ```
 
-#### **Sexism-3: Professional Stereotypes**
+#### **Sexism-3: Age Double Standards**
 
 ```html
 <div class="scenario-intro">
   <h3 style="color: #2c3e50; margin-bottom: 15px;">
-    🎯 Marketing & Gender Discussion
+    📺 Age & Gender Discussion
   </h3>
   <div
     style="background: #fef9e7; border: 1px solid #f9ca24; padding: 15px; border-radius: 8px; margin-bottom: 20px;"
   >
     <p>
-      <strong>📋 Content Notice:</strong> This conversation involves workplace
-      gender discrimination and professional stereotypes.
+      <strong>📋 Content Notice:</strong> This conversation involves gender
+      stereotypes about aging and attractiveness.
     </p>
   </div>
   <p
     style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;"
   >
-    You'll discuss gender stereotypes in professional settings and media
-    representation.
+    You'll discuss double standards about aging between men and women in comedy
+    and society.
     <strong>The conversation will last up to 20 minutes.</strong>
   </p>
 </div>
@@ -397,32 +397,32 @@ Copy and paste these into your Qualtrics survey questions. Replace `your-deploym
     height="900px"
     frameborder="0"
     style="border: none;"
-    title="Sexism Scenario 3: Professional Stereotypes Discussion"
+    title="Sexism Scenario 3: Age Double Standards Discussion"
   >
   </iframe>
 </div>
 ```
 
-#### **Sexism-4: Maternity & Career Bias**
+#### **Sexism-4: Gendered Caregiving Assumptions**
 
 ```html
 <div class="scenario-intro">
   <h3 style="color: #2c3e50; margin-bottom: 15px;">
-    👩‍💼 Career & Family Discussion
+    👨‍👩‍👧 Caretaking Roles Discussion
   </h3>
   <div
     style="background: #fef9e7; border: 1px solid #f9ca24; padding: 15px; border-radius: 8px; margin-bottom: 20px;"
   >
     <p>
-      <strong>📋 Content Notice:</strong> This conversation involves workplace
-      discrimination based on parental status.
+      <strong>📋 Content Notice:</strong> This conversation involves gender
+      assumptions about caretaking and parental roles.
     </p>
   </div>
   <p
     style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;"
   >
-    You'll discuss workplace bias against mothers and career-family balance
-    expectations.
+    You'll discuss assumptions about who handles childcare responsibilities and
+    shopping for children.
     <strong>The conversation will last up to 20 minutes.</strong>
   </p>
 </div>
@@ -437,7 +437,7 @@ Copy and paste these into your Qualtrics survey questions. Replace `your-deploym
     height="900px"
     frameborder="0"
     style="border: none;"
-    title="Sexism Scenario 4: Maternity Career Bias Discussion"
+    title="Sexism Scenario 4: Gendered Caregiving Assumptions Discussion"
   >
   </iframe>
 </div>

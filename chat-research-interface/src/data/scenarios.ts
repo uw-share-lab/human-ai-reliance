@@ -55,16 +55,16 @@ export const scenarios: Scenario[] = [
   {
     id: 'sexism-3',
     type: 'sexism',
-    title: 'Female Voices in Marketing',
-    scenario: "I work in a large marketing department and recently whilst speaking about the voice we use on our adverts, we discussed the prospect of using a female voice over. My male senior, department deputy really, said to me that we don't use females because \"all female voices sound sexual\".",
-    botOpinion: "Hi, my opinion on this scenario is that your senior's comment is clearly sexist. Stereotyping all female voices as inherently sexual is both reductive and discriminatory, leading to unfair exclusion of women from professional opportunities. This kind of blanket generalization perpetuates harmful gender bias in the workplace. What do you think?"
+    title: 'Age Double Standards',
+    scenario: "For example, my brother and I were watching a stand-up comedy, and the comedian was joking [about] how when women hit 40, they aren't on the market anymore, but for men [it] is of course not the same",
+    botOpinion: "Hi, my opinion on this scenario is that this joke is sexist. It relies on the stereotype that women lose value as they age, while men do not, reinforcing harmful double standards about gender and attractiveness. By normalizing the idea that women's worth is tied to their youth and appearance, whereas men are exempt from similar judgments, it perpetuates sexism. What do you think?"
   },
   {
     id: 'sexism-4',
     type: 'sexism',
-    title: 'Maternity Leave Discrimination',
-    scenario: "I return to work from maternity leave (working 30 hours a week), to be told by my boss, \"hey you can't do special projects because you only work part time\", \" you have to be there 7 til 7\" and \"no-one is going to take you seriously now because you work part time\" and \"don't apply for a promotion cause you have more important things to worry about at home\"",
-    botOpinion: "Hi, my opinion on this scenario is that your boss's comments are clearly sexist and likely illegal. They're directly limiting your career opportunities based on assumptions about your priorities as a new mother. This kind of parental status discrimination reinforces harmful stereotypes about women in the workplace. What do you think?"
+    title: 'Gendered Caregiving Assumptions',
+    scenario: "My partner and I took his daughter shopping for new shoes, we took a number and waited for our turn. When the assistant came over I was standing and my partner and his daughter were sat on the seats waiting to be served, the assistant turned to me and asked how she could help, completely ignoring my partner.",
+    botOpinion: "Hi, my opinion on this scenario is that this may reflect a subtle form of sexism based on gendered assumptions about caretaking roles. The assistant's immediate turn to you, instead of your partner (the daughter's father), likely stems from the stereotype that women—rather than men—are usually responsible for children's shopping and caregiving needs. What do you think?"
   }
 ];
 

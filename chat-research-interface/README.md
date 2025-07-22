@@ -94,8 +94,8 @@ These explore gender dynamics and workplace bias:
 
 - **sexism-1**: Women's Duty to Have Children - Reproductive autonomy
 - **sexism-2**: Apologizing for Swearing - Gender-based assumptions
-- **sexism-3**: Female Voices in Marketing - Professional stereotypes
-- **sexism-4**: Maternity Leave Discrimination - Career vs. family bias
+- **sexism-3**: Age Double Standards - Gender and aging stereotypes
+- **sexism-4**: Gendered Caregiving Assumptions - Caretaker role assumptions
 
 Each scenario includes:
 - Detailed context and background
