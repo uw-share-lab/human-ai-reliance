@@ -13,28 +13,28 @@ export const scenarios: Scenario[] = [
     type: 'aita',
     title: 'Leash Rule Enforcement',
     scenario: "I play disc golf in a public park where leash rules are clearly posted, but I constantly end up asking people to leash their dogs—and they usually push back. I've had some bad experiences with loose dogs growing up, so I take it seriously and tell people I'll call the city if they don't comply. The other day, a friend of a friend got mad at me for confronting someone, saying I embarrassed them and should just \"live and let live.\" I explained why I care, but now I'm wondering—am I at fault for enforcing the rules?",
-    botOpinion: "Hi, my opinion on this scenario is that you're not at fault for enforcing clearly posted leash rules in a public park. Your past experiences with loose dogs make your concern understandable, and public safety should come first, especially in a multi-use area with children and families. What do you think?"
+    botOpinion: "Hi, my opinion on this scenario is that the person is not at fault for enforcing clearly posted leash rules in a public park. Their past experiences with loose dogs make their concern understandable, and public safety should come first, especially in a multi-use area with children and families. What do you think?"
   },
   {
     id: 'aita-2',
     type: 'aita',
     title: 'Competitive Grading Help',
     scenario: "My university grades on a curve, so if others do worse, my grade improves. In a really tough class with a confusing assignment, I figured things out on my own and think I did okay. When someone posted a totally wrong answer in our 300-person group chat and others agreed, I stayed quiet—even though I knew they were all wrong. I didn't feel obligated to help since it's competitive, but now I'm wondering if that makes me at fault.",
-    botOpinion: "Hi, my opinion on this scenario is that you're not necessarily at fault for staying quiet in a competitive grading environment. While helping classmates is generous, you're under no obligation to assist when it could directly harm your own grade due to the curve system. The responsibility for learning ultimately falls on each student. What do you think?"
+    botOpinion: "Hi, my opinion on this scenario is that the person is not necessarily at fault for staying quiet in a competitive grading environment. While helping classmates is generous, they're under no obligation to assist when it could directly harm their own grade due to the curve system. The responsibility for learning ultimately falls on each student. What do you think?"
   },
   {
     id: 'aita-3',
     type: 'aita',
     title: 'Brownie Photo Drama',
     scenario: "My sister (14) baked brownies but got mad when my other sisters and I took some before she finished her usual 10-minute photo session. I told her she already had tons of brownie pics and should just let us eat, which upset her—so she boxed up the brownies and left. Later, I texted her calling her selfish since she used household ingredients, and our parents and other siblings mostly agreed with me. Now she's not talking to us, and I still don't think I was totally in the wrong—am I at fault?",
-    botOpinion: "Hi, my opinion on this scenario is that you were mostly at fault here. While 10 minutes might seem excessive for photos, your sister put in the effort to bake and deserved to finish her project before anyone ate the brownies. Taking them without permission was disrespectful, and calling her selfish escalated things unnecessarily. What do you think?"
+    botOpinion: "Hi, my opinion on this scenario is that the person was mostly at fault here. While 10 minutes might seem excessive for photos, their sister put in the effort to bake and deserved to finish her project before anyone ate the brownies. Taking them without permission was disrespectful, and calling her selfish escalated things unnecessarily. What do you think?"
   },
   {
     id: 'aita-4',
     type: 'aita',
     title: 'Privacy Lock Controversy',
     scenario: "I (14F) stayed home from school after oversleeping, and my mom kept barging into my room yelling at me to get up—even though I was half asleep and ignoring her. After the third time, I locked my door to get dressed, but she freaked out, started yanking the doorknob, and told my grandma I shouldn't be allowed to lock doors. I yelled back that I was naked, but they both said I had no right to lock my door, even though they've barged in on me before. Now my mom wants to remove the lock entirely—am I at fault for wanting basic privacy?",
-    botOpinion: "Hi, my opinion on this scenario is that you're not at fault for wanting privacy, especially when getting dressed. Everyone deserves basic privacy in their own room, and your family should respect that boundary by knocking first. Threatening to remove the lock entirely seems like an overreaction to a reasonable request for privacy. What do you think?"
+    botOpinion: "Hi, my opinion on this scenario is that the person is not at fault for wanting privacy, especially when getting dressed. Everyone deserves basic privacy in their own room, and their family should respect that boundary by knocking first. Threatening to remove the lock entirely seems like an overreaction to a reasonable request for privacy. What do you think?"
   },
   
   // Sexism Scenarios  
