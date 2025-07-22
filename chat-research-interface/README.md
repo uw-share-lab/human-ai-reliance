@@ -11,7 +11,9 @@ This application is fully implemented, tested, and ready for production use. All
 ### **✅ Enhanced Research Capabilities**
 - **8 Curated Scenarios**: 4 AITA (moral reasoning) + 4 sexism scenarios with unique AI perspectives
 - **Persistent Prolific ID**: Users enter ID once, works across all embedded scenarios  
+- **Start Button Control**: Interactive overlay prevents accidental interactions when embedded
 - **Direct Scenario Embedding**: Each scenario embeds directly into Qualtrics (no landing page needed)
+- **Controlled Session Start**: Users must explicitly click "Start Scenario" before timer begins
 - **Complete Data Collection**: Full conversation history, timing, and participant tracking
 - **Session Management**: 20-minute timeout with automatic data preservation
 - **Safety Features**: Content moderation and respectful AI responses for sensitive topics

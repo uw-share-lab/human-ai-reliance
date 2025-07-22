@@ -5,6 +5,7 @@ import { Message, ChatState } from '../types';
 import { conversationService } from '../services/conversationService';
 import { openaiService, ChatMessage } from '../services/openaiService';
 import ProlificIdEntry from './ProlificIdEntry';
+import StartOverlay from './StartOverlay';
 import { v4 as uuidv4 } from 'uuid';
 import '../styles/ChatInterface.css';
 
@@ -18,6 +19,7 @@ const ChatInterface: React.FC = () => {
   const scenario = getScenarioById(scenarioId!);
   const [prolificId, setProlificId] = useState<string>('');
   const [isProlificIdValidated, setIsProlificIdValidated] = useState(false);
+  const [showStartOverlay, setShowStartOverlay] = useState(true);
   
   const [chatState, setChatState] = useState<ChatState>({
     messages: [],
@@ -64,6 +66,11 @@ const ChatInterface: React.FC = () => {
     setIsProlificIdValidated(true);
   }, []);
 
+  // Handle start overlay
+  const handleStartScenario = useCallback(() => {
+    setShowStartOverlay(false);
+  }, []);
+
   // Initialize conversation only after Prolific ID is validated
   useEffect(() => {
     if (!scenario) {
@@ -71,8 +78,8 @@ const ChatInterface: React.FC = () => {
       return;
     }
 
-    if (!isProlificIdValidated || !prolificId) {
-      return; // Don't initialize conversation until Prolific ID is set
+    if (!isProlificIdValidated || !prolificId || showStartOverlay) {
+      return; // Don't initialize conversation until Prolific ID is set and start overlay is dismissed
     }
 
     const initConversation = async () => {
@@ -107,7 +114,7 @@ const ChatInterface: React.FC = () => {
     };
 
     initConversation();
-  }, [scenario, prolificId, isProlificIdValidated, navigate]);
+  }, [scenario, prolificId, isProlificIdValidated, showStartOverlay, navigate]);
 
   // Timer functionality
   useEffect(() => {
@@ -291,6 +298,27 @@ const ChatInterface: React.FC = () => {
   // Show Prolific ID entry if not validated yet
   if (!isProlificIdValidated) {
     return <ProlificIdEntry onProlificIdSet={handleProlificIdSet} />;
+  }
+
+  // Show start overlay if not dismissed yet
+  if (showStartOverlay) {
+    return (
+      <div className="chat-container">
+        <div className="header">
+          <h1 className="study-title">Interactive AI Research Study</h1>
+          <p className="study-subtitle">University Research - Conversation Interface</p>
+        </div>
+        <div className="status-bar">
+          <span className="participant-info">
+            Participant ID: {prolificId} • Ready to Begin
+          </span>
+        </div>
+        <StartOverlay 
+          onStart={handleStartScenario} 
+          scenarioTitle={scenario.title}
+        />
+      </div>
+    );
   }
 
   return (

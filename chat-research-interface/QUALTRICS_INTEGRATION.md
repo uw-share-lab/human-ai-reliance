@@ -18,10 +18,11 @@ Before starting, ensure you have:
 ### **🎯 Why This Integration is Superior:**
 
 - **🔄 Persistent ID System**: Users enter Prolific ID once, works across ALL embedded scenarios
+- **🎯 Start Button Control**: Interactive overlay prevents accidental simultaneous interactions 
 - **🎪 Direct Embedding**: Each scenario embeds directly - no landing page or navigation required
 - **🔗 Automatic Data Linking**: All conversations automatically connected to participant
 - **📱 Universal Compatibility**: Works on desktop, tablet, and mobile within Qualtrics
-- **⏱️ Independent Sessions**: Each scenario has own 5-minute timer and data collection
+- **⏱️ Independent Sessions**: Each scenario has own 20-minute timer and data collection
 - **🛡️ Built-in Safety**: Content moderation and respectful AI responses
 
 ## Survey Structure Options
@@ -82,11 +83,14 @@ If you want to pre-populate the Prolific ID to skip the entry screen:
 </iframe>
 ```
 
-### **Persistent Session Flow**
+### **Controlled Session Flow**
 
 1. **First Scenario**: User enters Prolific ID (stored in browser)
-2. **Subsequent Scenarios**: ID automatically retrieved, no re-entry needed
-3. **Data Linking**: All conversations automatically linked to same participant
+2. **Start Overlay**: User sees scenario title and clicks "Start Scenario" to begin
+3. **Timer Starts**: 20-minute session timer begins only after start button clicked
+4. **Subsequent Scenarios**: ID automatically retrieved, start overlay appears again
+5. **Independent Control**: Each scenario requires explicit start, preventing accidental simultaneous interactions
+6. **Data Linking**: All conversations automatically linked to same participant
 
 ## Advanced Parameter Passing
 
@@ -150,7 +154,7 @@ Copy and paste these into your Qualtrics survey questions. Replace `your-deploym
     style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;"
   >
     You'll discuss a situation involving park rules, dog ownership, and personal
-    responsibility. The AI will present its perspective and ask for yours.
+    responsibility. Click "Start Scenario" when ready to begin - your session timer will start then.
     <strong>The conversation will last up to 20 minutes.</strong>
   </p>
 </div>
@@ -546,8 +550,9 @@ Before launching:
 - [ ] **Preview survey** in Qualtrics preview mode
 - [ ] **Test iframe loading** - scenarios should load directly
 - [ ] **Test Prolific ID entry** - should only prompt once across scenarios
-- [ ] **Test conversation functionality** - messages should send/receive
-- [ ] **Test session timeout** - should redirect properly
+- [ ] **Test start overlay** - should appear before each scenario and prevent premature interaction
+- [ ] **Test conversation functionality** - messages should send/receive after clicking start
+- [ ] **Test session timeout** - timer should only start after clicking "Start Scenario"
 - [ ] **Check data collection** - verify data appears in Supabase
 - [ ] **Test on mobile** - ensure responsive design works
 - [ ] **Test completion flow** - verify redirect to Prolific works

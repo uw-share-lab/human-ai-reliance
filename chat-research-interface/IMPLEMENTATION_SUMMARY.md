@@ -19,7 +19,9 @@ Your Chat Research Interface is **100% complete, tested, and optimized for produ
 
 ### ✅ **Enhanced User Experience:**
 - **Single ID Entry**: Users enter Prolific ID once, persists across all scenarios
+- **Start Button Overlay**: Prevents accidental interactions when embedded in multiple survey pages
 - **Direct Scenario Access**: Each scenario can be embedded directly in Qualtrics
+- **Controlled Session Start**: Users must explicitly click "Start Scenario" before chat begins
 - **No Landing Page Required**: Participants go straight to conversation interface
 - **Cross-Question Memory**: ID remembered even when navigating between survey questions
 - **Mobile Responsive**: Works seamlessly on all device sizes
@@ -102,17 +104,19 @@ GROUP BY prolific_id;
 1. User clicks Qualtrics survey link with Prolific ID
 2. Lands on scenario page → prompted to enter/confirm Prolific ID
 3. ID stored in browser localStorage for persistence
-4. Chat interface loads with scenario context
-5. AI presents initial opinion, user responds
-6. 20-minute timer counts down, conversation auto-saves
-7. Session ends naturally or via timeout → data saved to Supabase
+4. **Start overlay appears** → user sees scenario title and must click "Start Scenario"
+5. Chat interface loads with scenario context after start button clicked
+6. AI presents initial opinion, user responds
+7. 20-minute timer counts down (starts only after "Start" clicked), conversation auto-saves
+8. Session ends naturally or via timeout → data saved to Supabase
 
 ### **Subsequent Scenarios:**
 1. User navigates to next Qualtrics question with embedded scenario
 2. Prolific ID automatically retrieved from localStorage
-3. **No re-entry required** → direct access to chat interface
-4. New conversation created but linked to same participant
-5. Independent 20-minute timer for each scenario
+3. **Start overlay appears again** → prevents accidental simultaneous interactions
+4. User clicks "Start Scenario" when ready → timer begins for this scenario
+5. New conversation created but linked to same participant
+6. Independent 20-minute timer for each scenario
 
 ## 📋 Testing Checklist
 
@@ -120,11 +124,13 @@ GROUP BY prolific_id;
 - [ ] Deploy to Vercel with production environment variables
 - [ ] Test all 8 scenarios load correctly
 - [ ] Verify Prolific ID persistence across scenarios  
+- [ ] **Test start overlay functionality** - ensure overlay prevents premature interaction
+- [ ] **Verify controlled session start** - confirm timer only starts after "Start" clicked
 - [ ] Test timeout functionality and redirects
 - [ ] Confirm data appears correctly in Supabase
 - [ ] Test mobile responsiveness
 - [ ] Verify Qualtrics iframe embedding
-- [ ] Test end-to-end participant flow
+- [ ] Test end-to-end participant flow with start overlay
 - [ ] Check AI response quality and appropriateness
 - [ ] Validate data export capabilities
 
