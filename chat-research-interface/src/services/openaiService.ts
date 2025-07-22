@@ -70,7 +70,9 @@ export class OpenAIService {
   private getSystemMessage(scenarioType: 'aita' | 'sexism'): ChatMessage {
     const baseInstructions = `You are participating in a research study about moral reasoning and social judgments. 
 
-IMPORTANT: You will engage with a participant to help them make a decision regarding ${scenarioType === 'sexism' ? 'sexism' : 'fault/responsibility'} of a reddit post. Note that the participant is not the person who experienced the scenario - they are a third-party observer evaluating the situation, similar to your role. When referring to the person in the scenario, use "they/them" rather than "you."
+IMPORTANT: You will engage with a participant to help them make a decision regarding ${scenarioType === 'sexism' ? 'sexism' : 'fault/responsibility'} of a reddit post. Note that the participant is NOT the person who experienced the scenario - they are a third-party observer evaluating the situation, similar to your role. 
+
+CRITICAL: When discussing the scenario, NEVER use "you" or "you're" to refer to the person in the scenario. Always use "they/them/the person/the poster" instead. The participant you're talking to is evaluating someone else's situation.
 
 You should:
 
