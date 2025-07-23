@@ -32,6 +32,8 @@ const ChatInterface: React.FC = () => {
   const [conversationId, setConversationId] = useState<string>('');
   const [inputValue, setInputValue] = useState('');
   const [hasStarted, setHasStarted] = useState(false);
+  const [sessionEnded, setSessionEnded] = useState(false);
+  const [sessionEndReason, setSessionEndReason] = useState<'timeout' | 'early' | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -49,16 +51,10 @@ const ChatInterface: React.FC = () => {
       console.error('Failed to end conversation on timeout:', error);
     }
 
-    alert('Session time expired. You will be redirected back to the survey.');
-    
-    // Redirect back to Prolific/Qualtrics
-    const returnUrl = searchParams.get('return_url');
-    if (returnUrl) {
-      window.location.href = returnUrl;
-    } else {
-      navigate('/timeout');
-    }
-  }, [conversationId, navigate, searchParams]);
+    setSessionEnded(true);
+    setSessionEndReason('timeout');
+    alert('Session time expired. The chat is now locked, but you can still view and copy your conversation history.');
+  }, [conversationId]);
 
   // Handle Prolific ID validation
   const handleProlificIdSet = useCallback((id: string) => {
@@ -234,7 +230,7 @@ const ChatInterface: React.FC = () => {
 
   // Handle early end
   const handleEarlyEnd = async () => {
-    if (!window.confirm('Are you sure you want to end this scenario early? You can still participate in other scenarios if available.')) {
+    if (!window.confirm('Are you sure you want to end this scenario early? The chat will be locked but you can still view your conversation.')) {
       return;
     }
 
@@ -244,14 +240,9 @@ const ChatInterface: React.FC = () => {
       console.error('Failed to end conversation:', error);
     }
 
-    alert('This scenario ended. You will be redirected back to the survey.');
-    
-    const returnUrl = searchParams.get('return_url');
-    if (returnUrl) {
-      window.location.href = returnUrl;
-    } else {
-      navigate('/complete');
-    }
+    setSessionEnded(true);
+    setSessionEndReason('early');
+    alert('Scenario ended. The chat is now locked, but you can still view and copy your conversation history.');
   };
 
   // Copy scenario to clipboard
@@ -375,6 +366,19 @@ const ChatInterface: React.FC = () => {
         {/* Chat Panel */}
         <div className="chat-panel">
           <div className="chat-header">Conversation with AI Assistant</div>
+          
+          {sessionEnded && (
+            <div className={`session-status ${sessionEndReason}`}>
+              <strong>
+                {sessionEndReason === 'timeout' 
+                  ? '⏰ Session Time Expired' 
+                  : '✋ Session Ended Early'
+                }
+              </strong>
+              <br />
+              The chat is now locked. You can still view and copy your conversation history.
+            </div>
+          )}
 
           <div className="chat-messages">
             {chatState.messages.map((message, index) => (
@@ -414,17 +418,17 @@ const ChatInterface: React.FC = () => {
               <textarea
                 ref={inputRef}
                 className="input-field"
-                placeholder="Type your message here..."
+                placeholder={sessionEnded ? "Session ended - chat is locked" : "Type your message here..."}
                 value={inputValue}
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
                 rows={1}
-                disabled={chatState.isLoading}
+                disabled={chatState.isLoading || sessionEnded}
               />
               <button
                 className="send-button"
                 onClick={sendMessage}
-                disabled={chatState.isLoading || !inputValue.trim()}
+                disabled={chatState.isLoading || !inputValue.trim() || sessionEnded}
               >
                 Send
               </button>
@@ -438,8 +442,8 @@ const ChatInterface: React.FC = () => {
         <span className="interaction-counter">
           Interactions: {chatState.interactionCount} exchanges
         </span>
-        <button className="end-button" onClick={handleEarlyEnd}>
-          End Session Early
+        <button className="end-button" onClick={handleEarlyEnd} disabled={sessionEnded}>
+          {sessionEnded ? 'Session Ended' : 'End Session Early'}
         </button>
       </div>
     </div>

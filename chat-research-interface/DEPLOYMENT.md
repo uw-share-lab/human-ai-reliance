@@ -177,7 +177,7 @@ Set up survey flow:
 - **Counterbalancing**: Randomize scenario order
 - **Attention Checks**: Verify engagement
 - **Data Validation**: Check completion status
-- **Return URLs**: Redirect back to specific survey pages
+- **Return URLs**: Optional parameters (sessions now lock in-place instead of redirecting)
 
 ## Monitoring & Analytics
 
@@ -265,8 +265,8 @@ GROUP BY study_type;
 **Session Timeout Problems:**
 
 - Test with shorter timeouts for debugging
-- Check redirect URLs in survey flow
-- Verify timeout logic in browser developer tools
+- Verify session locks properly when timeout occurs
+- Check that chat interface disables correctly and status banner appears
 
 ## Security Considerations
 
@@ -342,7 +342,7 @@ done
 - ✅ Create test Qualtrics survey with iframe
 - ✅ Test Prolific ID persistence across scenarios
 - ✅ Verify conversation data appears in Supabase
-- ✅ Test timeout and redirect functionality
+- ✅ Test timeout and session lock functionality
 - ✅ Confirm mobile responsiveness
 
 ### **4. Production Monitoring Setup**

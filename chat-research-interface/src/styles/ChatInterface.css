@@ -313,6 +313,32 @@
   font-size: 14px;
 }
 
+.session-status {
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  text-align: center;
+  border: 2px solid;
+}
+
+.session-status.timeout {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #7f1d1d;
+}
+
+.session-status.early {
+  background: #fef3c7;
+  border-color: #fcd34d;
+  color: #78350f;
+}
+
+.end-button:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
 .safety-notice {
   background: #f8d7da;
   border: 1px solid #f5c6cb;

@@ -15,7 +15,7 @@ This application is fully implemented, tested, and ready for production use. All
 - **Direct Scenario Embedding**: Each scenario embeds directly into Qualtrics (no landing page needed)
 - **Controlled Session Start**: Users must explicitly click "Start Scenario" before timer begins
 - **Complete Data Collection**: Full conversation history, timing, and participant tracking
-- **Session Management**: 20-minute timeout with automatic data preservation
+- **Session Management**: 20-minute timeout with automatic data preservation and locked chat interface
 - **Safety Features**: Content moderation and respectful AI responses for sensitive topics
 
 ### **✅ Technical Excellence**
@@ -174,7 +174,7 @@ REACT_APP_DEFAULT_TIMEOUT=20
 - Anonymous participant identification via Prolific IDs only
 - No personally identifiable information collected
 - Data stored in EU-compliant Supabase infrastructure
-- Participants can end sessions early at any time
+- Participants can end sessions early at any time, with chat locked but conversation history remaining accessible
 
 ### Data Analysis
 Use the Supabase dashboard or connect to PostgreSQL for analysis:

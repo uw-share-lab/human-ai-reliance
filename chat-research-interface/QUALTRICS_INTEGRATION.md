@@ -126,12 +126,14 @@ For seamless survey flow:
 
 ```html
 <iframe
-  src="https://your-deployment.vercel.app/scenario/aita-3?PROLIFIC_PID=${e://Field/PROLIFIC_PID}&return_url=${e://SurveyURL}&return_response=${e://Field/ResponseID}"
+  src="https://your-deployment.vercel.app/scenario/aita-3?PROLIFIC_PID=${e://Field/PROLIFIC_PID}"
   width="100%"
   height="900px"
 >
 </iframe>
 ```
+
+**Note:** Return URL parameters are optional since sessions now lock the chat interface when complete instead of redirecting users away from the page.
 
 ## Complete Scenario Implementation Examples
 
@@ -537,6 +539,8 @@ https://your-survey.qualtrics.com/jfe/form/SV_XXXXXXXXX?PROLIFIC_PID={{%PROLIFIC
 - Go to **Survey Options** → **Survey Termination**
 - Set **Redirect to URL**: `https://app.prolific.co/submissions/complete?cc=YOUR_COMPLETION_CODE`
 
+**Note:** Chat sessions no longer automatically redirect users when they complete or timeout. Users must manually proceed to the next survey question or complete the survey.
+
 #### **Survey Settings:**
 
 - **Prevent ballot box stuffing**: ON (one response per participant)
@@ -555,7 +559,7 @@ Before launching:
 - [ ] **Test session timeout** - timer should only start after clicking "Start Scenario"
 - [ ] **Check data collection** - verify data appears in Supabase
 - [ ] **Test on mobile** - ensure responsive design works
-- [ ] **Test completion flow** - verify redirect to Prolific works
+- [ ] **Test completion flow** - verify session locks properly when timeout occurs or user ends early
 
 ## Advanced Configuration
 

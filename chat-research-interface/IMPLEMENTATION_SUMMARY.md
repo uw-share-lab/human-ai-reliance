@@ -108,7 +108,7 @@ GROUP BY prolific_id;
 5. Chat interface loads with scenario context after start button clicked
 6. AI presents initial opinion, user responds
 7. 20-minute timer counts down (starts only after "Start" clicked), conversation auto-saves
-8. Session ends naturally or via timeout → data saved to Supabase
+8. Session ends naturally or via timeout → chat interface locks with status banner, data saved to Supabase
 
 ### **Subsequent Scenarios:**
 1. User navigates to next Qualtrics question with embedded scenario
@@ -126,7 +126,7 @@ GROUP BY prolific_id;
 - [ ] Verify Prolific ID persistence across scenarios  
 - [ ] **Test start overlay functionality** - ensure overlay prevents premature interaction
 - [ ] **Verify controlled session start** - confirm timer only starts after "Start" clicked
-- [ ] Test timeout functionality and redirects
+- [ ] Test timeout functionality and session lock behavior
 - [ ] Confirm data appears correctly in Supabase
 - [ ] Test mobile responsiveness
 - [ ] Verify Qualtrics iframe embedding
