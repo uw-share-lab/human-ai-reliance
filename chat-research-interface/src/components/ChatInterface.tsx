@@ -341,7 +341,7 @@ const ChatInterface: React.FC = () => {
 
       {/* Warning Banner */}
       <div className="warning-banner">
-        <strong>Important:</strong> Your session will automatically end in {Math.ceil(DEFAULT_TIMEOUT / 60)} minutes. 
+        <strong>Important:</strong> Your session will automatically end in 3 minutes. 
         Please ensure you complete your interaction within this timeframe.
       </div>
 
