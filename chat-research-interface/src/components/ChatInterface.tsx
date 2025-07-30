@@ -325,7 +325,7 @@ const ChatInterface: React.FC = () => {
         <span className="participant-info">
           Participant ID: {prolificId} • Session Active
         </span>
-        <span className={`timer ${chatState.timeRemaining < 300 ? 'warning' : ''}`}>
+        <span className={`timer ${chatState.timeRemaining < 60 ? 'warning' : ''}`}>
           Time Remaining: {formatTime(chatState.timeRemaining)}
         </span>
       </div>
