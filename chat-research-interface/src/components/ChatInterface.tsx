@@ -16,6 +16,20 @@ const ChatInterface: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   
+  // Detect iframe mode and prevent auto-scroll issues in Qualtrics
+  useEffect(() => {
+    const isInIframe = window.self !== window.top;
+    if (isInIframe) {
+      document.body.classList.add('iframe-mode');
+      // Prevent initial focus that could cause page jumping
+      document.body.style.scrollBehavior = 'auto';
+    }
+    
+    return () => {
+      document.body.classList.remove('iframe-mode');
+    };
+  }, []);
+  
   const scenario = getScenarioById(scenarioId!);
   const [prolificId, setProlificId] = useState<string>('');
   const [isProlificIdValidated, setIsProlificIdValidated] = useState(false);
@@ -134,9 +148,15 @@ const ChatInterface: React.FC = () => {
     };
   }, [hasStarted, handleTimeout]);
 
-  // Auto-scroll to bottom
+  // Auto-scroll to bottom (only if not in iframe to prevent Qualtrics page jumping)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const isInIframe = window.self !== window.top;
+    if (!isInIframe) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      // In iframe: scroll within the container only, without affecting parent page
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   }, [chatState.messages]);
 
   // Handle message sending

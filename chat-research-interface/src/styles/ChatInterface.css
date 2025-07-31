@@ -5,6 +5,16 @@
   padding: 20px;
 }
 
+/* Prevent iframe auto-scroll issues in Qualtrics */
+body.iframe-mode {
+  overflow-x: hidden;
+}
+
+body.iframe-mode .chat-container {
+  margin: 0;
+  padding: 10px;
+}
+
 .header {
   background: white;
   padding: 20px;

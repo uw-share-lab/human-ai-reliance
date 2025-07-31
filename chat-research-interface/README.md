@@ -15,7 +15,7 @@ This application is fully implemented, tested, and ready for production use. All
 - **Direct Scenario Embedding**: Each scenario embeds directly into Qualtrics (no landing page needed)
 - **Controlled Session Start**: Users must explicitly click "Start Scenario" before timer begins
 - **Complete Data Collection**: Full conversation history, timing, and participant tracking
-- **Session Management**: 20-minute timeout with automatic data preservation and locked chat interface
+- **Session Management**: 3-minute timeout with automatic data preservation and locked chat interface
 - **Safety Features**: Content moderation and respectful AI responses for sensitive topics
 
 ### **✅ Technical Excellence**
@@ -49,7 +49,7 @@ This application is fully implemented, tested, and ready for production use. All
    REACT_APP_OPENAI_API_KEY=your_openai_api_key_here
    REACT_APP_SUPABASE_URL=your_supabase_project_url
    REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
-   REACT_APP_DEFAULT_TIMEOUT=20
+   REACT_APP_DEFAULT_TIMEOUT=3
    ```
 
 3. **Database setup**:
@@ -75,9 +75,11 @@ This application is fully implemented, tested, and ready for production use. All
 3. Embed scenarios directly (Prolific ID collection is handled automatically):
    ```html
    <iframe src="https://your-domain.com/scenario/aita-1" 
-           width="100%" height="900px" frameborder="0"></iframe>
+           width="100%" height="900px" frameborder="0"
+           scrolling="no" style="border: none; overflow: hidden;"></iframe>
    ```
 4. **New Feature**: Prolific ID persists across all embedded scenarios - users only enter it once!
+5. **Auto-scroll Prevention**: The app automatically detects iframe embedding and prevents page jumping/centering issues in Qualtrics
 
 ## Scenarios
 
@@ -152,7 +154,7 @@ participants
 REACT_APP_OPENAI_API_KEY=sk-proj-...
 REACT_APP_SUPABASE_URL=https://your-project.supabase.co  
 REACT_APP_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIs...
-REACT_APP_DEFAULT_TIMEOUT=20
+REACT_APP_DEFAULT_TIMEOUT=3
 ```
 
 ### Security Considerations
