@@ -23,6 +23,21 @@ const ChatInterface: React.FC = () => {
       document.body.classList.add('iframe-mode');
       // Prevent initial focus that could cause page jumping
       document.body.style.scrollBehavior = 'auto';
+      
+      // Prevent parent window scrolling by intercepting scroll events
+      const preventParentScroll = (e: Event) => {
+        e.stopPropagation();
+      };
+      
+      // Add event listeners to prevent scroll propagation to parent
+      window.addEventListener('scroll', preventParentScroll, { capture: true, passive: false });
+      document.addEventListener('scroll', preventParentScroll, { capture: true, passive: false });
+      
+      return () => {
+        window.removeEventListener('scroll', preventParentScroll, { capture: true });
+        document.removeEventListener('scroll', preventParentScroll, { capture: true });
+        document.body.classList.remove('iframe-mode');
+      };
     }
     
     return () => {

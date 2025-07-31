@@ -8,11 +8,24 @@
 /* Prevent iframe auto-scroll issues in Qualtrics */
 body.iframe-mode {
   overflow-x: hidden;
+  scroll-behavior: auto !important;
+}
+
+body.iframe-mode * {
+  scroll-behavior: auto !important;
 }
 
 body.iframe-mode .chat-container {
   margin: 0;
   padding: 10px;
+}
+
+/* Prevent focus outlines that might trigger scrolling in iframe */
+body.iframe-mode input:focus,
+body.iframe-mode textarea:focus,
+body.iframe-mode button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: -2px;
 }
 
 .header {

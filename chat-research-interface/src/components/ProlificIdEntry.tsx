@@ -11,8 +11,17 @@ const ProlificIdEntry: React.FC<ProlificIdEntryProps> = ({ onProlificIdSet }) =>
   const [error, setError] = useState('');
   const [isValidating, setIsValidating] = useState(false);
   const [searchParams] = useSearchParams();
+  
+  // Detect if we're in an iframe to prevent auto-scroll issues
+  const isInIframe = window.self !== window.top;
 
   useEffect(() => {
+    // Apply iframe-specific styling if embedded
+    if (isInIframe) {
+      document.body.classList.add('iframe-mode');
+      document.body.style.scrollBehavior = 'auto';
+    }
+    
     // Check if Prolific ID is already in URL parameters or localStorage
     const urlProlificId = searchParams.get('PROLIFIC_PID');
     const storedProlificId = localStorage.getItem('prolific_id');
@@ -32,7 +41,13 @@ const ProlificIdEntry: React.FC<ProlificIdEntryProps> = ({ onProlificIdSet }) =>
       onProlificIdSet(storedProlificId);
       return;
     }
-  }, [searchParams, onProlificIdSet]);
+    
+    return () => {
+      if (isInIframe) {
+        document.body.classList.remove('iframe-mode');
+      }
+    };
+  }, [searchParams, onProlificIdSet, isInIframe]);
 
   const validateProlificId = (id: string): boolean => {
     // Prolific IDs are typically 24 characters long and alphanumeric
@@ -104,7 +119,7 @@ const ProlificIdEntry: React.FC<ProlificIdEntryProps> = ({ onProlificIdSet }) =>
                 placeholder="Enter your Prolific ID (e.g., 5f8c2a1b3d4e5f6g7h8i9j0k)"
                 className={`id-input ${error ? 'error' : ''}`}
                 maxLength={30}
-                autoFocus
+                autoFocus={!isInIframe}
                 disabled={isValidating}
               />
               {error && <div className="error-message">{error}</div>}
