@@ -1,5 +1,5 @@
-import { supabase, DatabaseConversation, DatabaseMessage } from './supabaseClient';
-import { ConversationData, Message } from '../types';
+import { supabase } from './supabaseClient';
+import { Message } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 
 export class ConversationService {
@@ -65,34 +65,19 @@ export class ConversationService {
     if (error) {
       throw new Error(`Failed to save message: ${error.message}`);
     }
-
-    // Update interaction count
-    await this.updateInteractionCount(conversationId);
   }
 
-  async updateInteractionCount(conversationId: string): Promise<void> {
-    const { data, error: countError } = await supabase
-      .from('messages')
-      .select('id')
-      .eq('conversation_id', conversationId)
-      .eq('message_type', 'user');
-
-    if (countError) {
-      throw new Error(`Failed to get message count: ${countError.message}`);
-    }
-
-    const interactionCount = data.length;
-
-    const { error: updateError } = await supabase
+  async updateInteractionCount(conversationId: string, count: number): Promise<void> {
+    const { error } = await supabase
       .from('conversations')
-      .update({ 
-        interaction_count: interactionCount,
+      .update({
+        interaction_count: count,
         updated_at: new Date().toISOString()
       })
       .eq('id', conversationId);
 
-    if (updateError) {
-      throw new Error(`Failed to update interaction count: ${updateError.message}`);
+    if (error) {
+      throw new Error(`Failed to update interaction count: ${error.message}`);
     }
   }
 
@@ -130,57 +115,22 @@ export class ConversationService {
   }
 
   private async upsertParticipant(prolificId: string): Promise<void> {
-    console.log('Checking for existing participant:', prolificId);
-    const { data: existing, error: selectError } = await supabase
+    // Atomic upsert — safe under concurrent sessions for the same Prolific ID
+    const { error } = await supabase
       .from('participants')
-      .select('id, total_conversations')
-      .eq('prolific_id', prolificId)
-      .single();
-
-    console.log('Participant check result:', { existing, selectError });
-
-    if (selectError && selectError.code !== 'PGRST116') {
-      console.error('Error checking participant:', selectError);
-      throw new Error(`Failed to check participant: ${selectError.message}`);
-    }
-
-    if (existing) {
-      // Update existing participant
-      console.log('Updating existing participant:', existing);
-      const { error: updateError } = await supabase
-        .from('participants')
-        .update({
-          total_conversations: existing.total_conversations + 1,
-          updated_at: new Date().toISOString()
-        })
-        .eq('prolific_id', prolificId);
-
-      if (updateError) {
-        console.error('Error updating participant:', updateError);
-        throw new Error(`Failed to update participant: ${updateError.message}`);
-      }
-      console.log('Participant updated successfully');
-    } else {
-      // Create new participant
-      console.log('Creating new participant for:', prolificId);
-      const { data: insertedData, error: insertError } = await supabase
-        .from('participants')
-        .insert({
+      .upsert(
+        {
           id: uuidv4(),
           prolific_id: prolificId,
           first_seen: new Date().toISOString(),
           total_conversations: 1,
           metadata: {}
-        })
-        .select();
+        },
+        { onConflict: 'prolific_id', ignoreDuplicates: true }
+      );
 
-      console.log('Participant insert result:', { insertedData, insertError });
-
-      if (insertError) {
-        console.error('Error creating participant:', insertError);
-        throw new Error(`Failed to create participant: ${insertError.message}`);
-      }
-      console.log('New participant created successfully');
+    if (error) {
+      throw new Error(`Failed to upsert participant: ${error.message}`);
     }
   }
 }

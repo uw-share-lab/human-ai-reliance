@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getScenarioById } from '../data/scenarios';
 import { Message, ChatState } from '../types';
 import { conversationService } from '../services/conversationService';
@@ -14,7 +14,6 @@ const DEFAULT_TIMEOUT = parseInt(process.env.REACT_APP_DEFAULT_TIMEOUT || '20') 
 const ChatInterface: React.FC = () => {
   const { scenarioId } = useParams<{ scenarioId: string }>();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   
   // Detect iframe mode and prevent auto-scroll issues in Qualtrics
   useEffect(() => {
@@ -67,6 +66,8 @@ const ChatInterface: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  // Monotonically-increasing sequence counter — avoids stale-closure issues with chatState.messages.length
+  const nextSeqRef = useRef(1);
 
   // Timeout handler
   const handleTimeout = useCallback(async () => {
@@ -122,7 +123,7 @@ const ChatInterface: React.FC = () => {
           type: 'ai',
           content: scenario.botOpinion,
           timestamp: new Date(),
-          sequenceNumber: 1,
+          sequenceNumber: nextSeqRef.current++,
         };
 
         setChatState(prev => ({
@@ -183,7 +184,7 @@ const ChatInterface: React.FC = () => {
       type: 'user',
       content: inputValue.trim(),
       timestamp: new Date(),
-      sequenceNumber: chatState.messages.length + 1,
+      sequenceNumber: nextSeqRef.current++,
     };
 
     setChatState(prev => ({
@@ -205,7 +206,7 @@ const ChatInterface: React.FC = () => {
           type: 'ai',
           content: "I notice your message contains inappropriate content. Let's keep our discussion respectful and focused on the scenario. Could you please rephrase your thoughts?",
           timestamp: new Date(),
-          sequenceNumber: chatState.messages.length + 2,
+          sequenceNumber: nextSeqRef.current++,
         };
 
         setChatState(prev => ({
@@ -232,15 +233,19 @@ const ChatInterface: React.FC = () => {
         type: 'ai',
         content: aiResponse,
         timestamp: new Date(),
-        sequenceNumber: chatState.messages.length + 2,
+        sequenceNumber: nextSeqRef.current++,
       };
 
-      setChatState(prev => ({
-        ...prev,
-        messages: [...prev.messages, aiMessage],
-        isLoading: false,
-        interactionCount: prev.interactionCount + 1,
-      }));
+      setChatState(prev => {
+        const newCount = prev.interactionCount + 1;
+        conversationService.updateInteractionCount(conversationId, newCount).catch(console.error);
+        return {
+          ...prev,
+          messages: [...prev.messages, aiMessage],
+          isLoading: false,
+          interactionCount: newCount,
+        };
+      });
 
       await conversationService.saveMessage(conversationId, aiMessage);
 
@@ -252,7 +257,7 @@ const ChatInterface: React.FC = () => {
         type: 'ai',
         content: "I'm sorry, I'm having trouble responding right now. Please try again.",
         timestamp: new Date(),
-        sequenceNumber: chatState.messages.length + 2,
+        sequenceNumber: nextSeqRef.current++,
       };
 
       setChatState(prev => ({
