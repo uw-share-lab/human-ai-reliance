@@ -1,4 +1,4 @@
-const OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
+const OPENAI_URL = 'https://api.openai.com/v1/responses';
 const MAX_RETRIES = 3;
 
 module.exports = async function handler(req, res) {
@@ -17,12 +17,11 @@ module.exports = async function handler(req, res) {
   }
 
   const requestBody = {
-    model: 'gpt-4.1',
-    messages: [buildSystemMessage(scenarioType), ...messages],
-    max_tokens: 500,
+    model: 'gpt-5.5-2026-04-23',
+    instructions: buildSystemPrompt(scenarioType),
+    input: messages,
+    max_output_tokens: 500,
     temperature: 0.7,
-    presence_penalty: 0.1,
-    frequency_penalty: 0.1,
   };
 
   let lastStatus = 500;
@@ -50,7 +49,7 @@ module.exports = async function handler(req, res) {
 
     if (response.ok) {
       const data = await response.json();
-      const content = data.choices?.[0]?.message?.content ?? '';
+      const content = data.output_text ?? data.output?.[0]?.content?.[0]?.text ?? '';
       return res.status(200).json({ content });
     }
 
@@ -73,7 +72,7 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function buildSystemMessage(scenarioType) {
+function buildSystemPrompt(scenarioType) {
   const base = `You are participating in a research study about moral reasoning and social judgments.
 
 IMPORTANT: You will engage with a participant to help them make a decision regarding ${scenarioType === 'sexism' ? 'sexism' : 'fault/responsibility'} of a reddit post. Note that the participant is NOT the person who experienced the scenario - they are a third-party observer evaluating the situation, similar to your role.
@@ -102,5 +101,5 @@ You should:
 - Considering various stakeholders and their perspectives
 - Discussing fairness, responsibility, and consequences`;
 
-  return { role: 'system', content: base + specific };
+  return base + specific;
 }
