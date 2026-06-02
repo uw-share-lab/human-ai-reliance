@@ -3,8 +3,13 @@
 Threshold analysis for identifying non-engagers in the high-interactivity condition.
 
 Outputs:
-  analysis/engagement_thresholds.txt   — exclusion counts at each threshold
-  analysis/plots/                      — distribution figures
+  analysis/engagement_thresholds.txt        — exclusion counts at each threshold
+  analysis/hard_exclusions_test_participants.csv  — fake/test Prolific IDs
+  analysis/threshold_turns2_words20.csv     — non-engager list (turns<2 AND words<20)
+  analysis/threshold_turns2_words30.csv     — non-engager list (turns<2 AND words<30)
+  analysis/exclude_words20.csv              — combined: threshold + hard exclusions
+  analysis/exclude_words30.csv              — combined: threshold + hard exclusions
+  analysis/plots/                           — distribution figures
 """
 
 import os
@@ -16,8 +21,10 @@ import matplotlib.gridspec as gridspec
 import numpy as np
 
 METRICS_PATH = os.path.join("analysis", "conversation_engagement_metrics.csv")
-OUT_TXT = os.path.join("analysis", "engagement_thresholds.txt")
-PLOTS_DIR = os.path.join("analysis", "plots")
+OUT_TXT      = os.path.join("analysis", "engagement_thresholds.txt")
+PLOTS_DIR    = os.path.join("analysis", "plots")
+
+TEST_PROLIFIC_IDS = ["123456789101112", "methodologies"]
 
 
 # ---------------------------------------------------------------------------
@@ -126,6 +133,31 @@ def main():
     with open(OUT_TXT, "w") as f:
         f.write(report)
     print(report)
+
+    # -----------------------------------------------------------------------
+    # Exclusion CSVs
+    # -----------------------------------------------------------------------
+    id_cols = ["prolific_id", "scenario_id"]
+    keep_cols = id_cols + ["num_user_turns", "total_user_words", "avg_user_words_per_turn"]
+
+    # Hard exclusions — test/pilot participants
+    hard = df[df["prolific_id"].isin(TEST_PROLIFIC_IDS)][keep_cols].copy()
+    hard.sort_values(id_cols).to_csv(os.path.join("analysis", "hard_exclusions_test_participants.csv"), index=False)
+
+    # Threshold-only lists
+    for t_word, fname in [(20, "threshold_turns2_words20.csv"), (30, "threshold_turns2_words30.csv")]:
+        mask = (df["num_user_turns"] < 2) & (df["total_user_words"] < t_word)
+        df[mask][keep_cols].sort_values(id_cols).to_csv(os.path.join("analysis", fname), index=False)
+
+    # Combined (threshold + hard) — single list for the prof to use
+    for t_word, fname in [(20, "exclude_words20.csv"), (30, "exclude_words30.csv")]:
+        thresh_mask = (df["num_user_turns"] < 2) & (df["total_user_words"] < t_word)
+        hard_mask   = df["prolific_id"].isin(TEST_PROLIFIC_IDS)
+        combined = df[thresh_mask | hard_mask][id_cols].drop_duplicates().sort_values(id_cols)
+        combined.to_csv(os.path.join("analysis", fname), index=False)
+        print(f"\n{fname}: {len(combined)} rows (threshold + hard exclusions combined)")
+
+    print(f"\nExclusion CSVs written to analysis/")
 
     # -----------------------------------------------------------------------
     # Plots

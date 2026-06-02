@@ -92,8 +92,10 @@ Post-Study-Analysis/
 | `analysis/scoring_words30/<scenario_id>.yaml` | `generate_scoring_yaml.py` | Same, with non-engagers (turns<2 AND words<30) and test participants removed (211 conversations). |
 | `analysis/engagement_thresholds.txt` | `engagement_thresholds.py` | Exclusion counts at every turns/words/combined threshold. Reference when deciding the non-engager cutoff. |
 | `analysis/hard_exclusions_test_participants.csv` | `engagement_thresholds.py` | Pilot/test Prolific IDs (`123456789101112`, `methodologies`) — exclude from all analyses unconditionally. |
-| `analysis/threshold_turns2_words20.csv` | `engagement_thresholds.py` | Non-engager list A: turns < 2 AND total words < 20 (24 conversation-scenario pairs). |
-| `analysis/threshold_turns2_words30.csv` | `engagement_thresholds.py` | Non-engager list B: turns < 2 AND total words < 30 (39 conversation-scenario pairs). |
+| `analysis/threshold_turns2_words20.csv` | `engagement_thresholds.py` | Non-engager list (threshold only): turns < 2 AND words < 20 (24 pairs). |
+| `analysis/threshold_turns2_words30.csv` | `engagement_thresholds.py` | Non-engager list (threshold only): turns < 2 AND words < 30 (39 pairs). |
+| `analysis/exclude_words20.csv` | `engagement_thresholds.py` | **Use this for stats run A** — combined: threshold (words<20) + test participants (28 pairs total). |
+| `analysis/exclude_words30.csv` | `engagement_thresholds.py` | **Use this for stats run B** — combined: threshold (words<30) + test participants (43 pairs total). |
 | `analysis/plots/` | `engagement_thresholds.py` | Distribution histograms, CDFs, exclusion curves, and turns-vs-words scatter. |
 
 ### Metrics produced
@@ -157,12 +159,12 @@ python scripts/engagement_thresholds.py   # step 4: threshold analysis + exclusi
 
 `engagement_thresholds.py` produces two exclusion lists (prolific_id + scenario_id pairs) for sensitivity analyses:
 
-| File | Criterion | Excluded |
+| File | What's in it | Pairs excluded |
 |---|---|---|
-| `threshold_turns2_words20.csv` | turns < 2 AND total words < 20 | 24 (9.4%) |
-| `threshold_turns2_words30.csv` | turns < 2 AND total words < 30 | 39 (15.4%) |
+| `exclude_words20.csv` | Non-engagers (turns<2 AND words<20) + test participants | 28 |
+| `exclude_words30.csv` | Non-engagers (turns<2 AND words<30) + test participants | 43 |
 
-**Hard exclusions** (`hard_exclusions_test_participants.csv`): pilot/test IDs that should be dropped from all analyses unconditionally, regardless of threshold — these have non-Prolific identifiers and were not real participants.
+These are the files to hand to the prof — each is a single `prolific_id, scenario_id` list covering both the engagement threshold and the fake test-participant IDs (`123456789101112`, `methodologies`). The separate component files (`hard_exclusions_test_participants.csv`, `threshold_turns2_words*.csv`) are also present if you need to inspect them individually.
 
 ## Qualitative scoring
 
