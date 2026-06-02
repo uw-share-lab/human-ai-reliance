@@ -1,6 +1,6 @@
 # Post-Study Analysis
 
-Two-step post-processing pipeline for the **Human-AI Reliance** study (Ferguson lab, University of Waterloo). Takes the raw Supabase export from [chat-research-interface](https://github.com/LLM-Reliance-Project/chat-research-interface), de-dupes accidentally-restarted sessions, and produces engagement metrics + formatted transcripts ready for qualitative scoring.
+Two-step post-processing pipeline for the **Human-AI Reliance** study ([SHARE Lab](https://uwshare-lab.ca), University of Waterloo). Takes the raw Supabase export from [chat-research-interface](https://github.com/LLM-Reliance-Project/chat-research-interface), de-dupes accidentally-restarted sessions, and produces engagement metrics + formatted transcripts ready for qualitative scoring.
 
 ```
 chat-research-interface (Supabase)
@@ -26,11 +26,16 @@ chat-research-interface (Supabase)
 
 ```
 Post-Study-Analysis/
-├── fix_duplicates.py
-├── engagement_metrics.py
 ├── schema.sql                                  # Supabase DDL, context only
 ├── requirements.txt
 ├── README.md
+│
+├── scripts/
+│   ├── fix_duplicates.py                       # Step 1: dedup raw exports → merged/
+│   └── engagement_metrics.py                   # Step 2: metrics + transcripts → analysis/
+│
+├── data/                                       (gitignored contents)
+│   └── ai_conflicts_high.xlsx                  ← reference data
 │
 ├── raw/                                        (gitignored contents)
 │   ├── conversations_rows.csv                  ← Supabase "Export rows" CSV
@@ -98,29 +103,28 @@ pip install -r requirements.txt
 
 ## Run
 
-Place the three raw exports in the repo root:
+Place the three raw exports in `raw/`:
 
 ```
 Post-Study-Analysis/
-├── conversations_rows.csv
-├── messages_rows.csv
-└── participants_rows.csv
+└── raw/
+    ├── conversations_rows.csv
+    ├── messages_rows.csv
+    └── participants_rows.csv
 ```
 
-Then:
+Then run from the `Post-Study-Analysis/` root:
 
 ```bash
 source .venv/bin/activate
 
-python fix_duplicates.py          # step 1: dedup → *_merged.csv
-python engagement_metrics.py      # step 2: metrics + transcripts
+python scripts/fix_duplicates.py          # step 1: dedup → merged/
+python scripts/engagement_metrics.py      # step 2: metrics + transcripts → analysis/
 ```
-
-Both scripts read from and write to the current directory.
 
 ## Qualitative scoring
 
-Open `conversation_transcripts_for_scoring.csv` in Excel or Google Sheets and fill the `qualitative_score` column using:
+Open `analysis/conversation_transcripts_for_scoring.csv` in Excel or Google Sheets and fill the `qualitative_score` column using:
 
 | Score | Label | Description |
 |-------|-------|-------------|
