@@ -8,7 +8,7 @@ This guide covers deploying the **production-ready** Chat Research Interface to 
 
 Before deploying, ensure you have:
 
-- ✅ **Supabase Database**: Set up using `SUPABASE_SETUP.md`
+- ✅ **Supabase Database**: Set up by applying `supabase-setup.sql` in the Supabase SQL editor
 - ✅ **OpenAI API Key**: Required for `gpt-5.5-2026-04-23` via Responses API
 - ✅ **GitHub Repository**: All code committed and pushed
 - ✅ **Vercel Account**: Free or paid plan

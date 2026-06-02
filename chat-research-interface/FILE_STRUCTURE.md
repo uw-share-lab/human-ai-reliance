@@ -1,77 +1,57 @@
 # Project File Structure
 
-## 📁 Clean, Production-Ready Structure
-
 ```
 chat-research-interface/
-├── 📚 DOCUMENTATION
-│   ├── README.md                     # Main project overview
-│   ├── DEPLOYMENT.md                 # Vercel deployment guide
-│   ├── QUALTRICS_INTEGRATION.md      # Survey embedding instructions
-│   ├── SUPABASE_SETUP.md            # Database configuration
-│   ├── IMPLEMENTATION_SUMMARY.md     # Feature overview & status
-│   └── .env.example                  # Environment variables template
+├── README.md                       # Main project overview
+├── DEPLOYMENT.md                   # Vercel deployment guide
+├── QUALTRICS_INTEGRATION.md        # Qualtrics survey embedding
+├── IMPLEMENTATION_SUMMARY.md       # Feature & status overview
+├── FILE_STRUCTURE.md               # This file
+├── .env.example                    # Environment variables template
 │
-├── ⚙️ CONFIGURATION
-│   ├── package.json                  # Dependencies & scripts
-│   ├── tsconfig.json                 # TypeScript configuration
-│   ├── vercel.json                   # Deployment configuration
-│   └── supabase-setup.sql           # Database schema
+├── package.json                    # Dependencies & npm scripts
+├── tsconfig.json                   # TypeScript config
+├── vercel.json                     # Vercel deployment config
+├── supabase-setup.sql              # Database schema + RLS policies
 │
-├── 🌐 PUBLIC ASSETS
-│   └── public/
-│       └── index.html               # Main HTML template
+├── public/
+│   └── index.html                  # HTML template
 │
-└── 💻 SOURCE CODE
-    └── src/
-        ├── App.tsx                  # Main application component
-        ├── App.css                  # Global styles
-        ├── index.tsx               # Application entry point
-        │
-        ├── 🧩 COMPONENTS/
-        │   ├── ChatInterface.tsx    # Main chat interface
-        │   ├── Home.tsx            # Scenario selection page
-        │   ├── ProlificIdEntry.tsx  # ID collection component
-        │   └── ScenarioRouter.tsx   # Route validation
-        │
-        ├── 📊 DATA/
-        │   └── scenarios.ts         # All 8 research scenarios
-        │
-        ├── 🔧 SERVICES/
-        │   ├── conversationService.ts  # Database operations
-        │   ├── openaiService.ts       # AI chat integration
-        │   └── supabaseClient.ts      # Database client
-        │
-        ├── 🎨 STYLES/
-        │   ├── ChatInterface.css    # Chat interface styles
-        │   ├── Home.css            # Home page styles
-        │   └── ProlificIdEntry.css  # ID entry styles
-        │
-        └── 📝 TYPES/
-            └── index.ts             # TypeScript type definitions
+├── api/
+│   └── chat.js                     # Vercel serverless OpenAI proxy
+│                                   #   (keeps OPENAI_API_KEY off the browser)
+│
+└── src/
+    ├── App.tsx                     # Main app component
+    ├── App.css                     # Global styles
+    ├── index.tsx                   # Entry point
+    │
+    ├── components/
+    │   ├── ChatInterface.tsx       # Main chat UI
+    │   ├── Home.tsx                # Scenario selection
+    │   ├── ProlificIdEntry.tsx     # Persistent participant ID entry
+    │   └── ScenarioRouter.tsx      # Route validation
+    │
+    ├── data/
+    │   └── scenarios.ts            # All 8 research scenarios
+    │
+    ├── services/
+    │   ├── conversationService.ts  # Supabase reads/writes
+    │   ├── openaiService.ts        # Calls /api/chat (no key here)
+    │   └── supabaseClient.ts       # Supabase client setup
+    │
+    ├── styles/
+    │   ├── ChatInterface.css
+    │   ├── Home.css
+    │   └── ProlificIdEntry.css
+    │
+    └── types/
+        └── index.ts                # TypeScript types
 ```
 
-## 🗑️ Removed Unnecessary Files
+## Notes
 
-- ❌ `PROJECT_README.md` (duplicate documentation)
-- ❌ `TESTING_RESULTS.md` (development-only file)
-- ❌ `public/scenario-pages/` (unused directory)
-- ❌ `build/` (auto-generated, will be created on deployment)
-
-## ✅ Essential Files Only
-
-The project now contains only the essential files needed for:
-- **Development** - Complete source code and configuration
-- **Deployment** - Production build and deployment configs
-- **Documentation** - Comprehensive setup and usage guides
-- **Research** - All scenarios and data collection capabilities
-
-## 🚀 Ready for Version Control
-
-This clean structure is optimized for:
-- Git repository management
-- Vercel deployment
-- Team collaboration
-- Long-term maintenance
-
-All unnecessary files have been removed while preserving complete functionality and comprehensive documentation.
+- `api/chat.js` runs as a Vercel serverless function — never bundled into the client.
+- `supabase-setup.sql` is the source of truth for the DB schema. Apply it in the Supabase SQL editor before first deploy.
+- `vercel.json` pins the Node runtime so `fetch` and the Responses API call in `api/chat.js` work.
+- Anything under `build/` and `node_modules/` is generated — gitignored.

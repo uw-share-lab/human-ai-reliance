@@ -1,30 +1,32 @@
 # Chat Research Interface
 
-**✅ Production-Ready React Application** for conducting research studies involving conversations between participants and AI assistants about moral reasoning and gender bias scenarios.
+React + TypeScript app that runs the interactive portion of the **Human-AI Reliance** study (Ferguson lab, University of Waterloo). Participants are routed to a specific moral-reasoning (AITA) or gender-bias (sexism) scenario, hold a short timed conversation with an AI, and have the full transcript saved to Supabase for later analysis.
 
-## 🎯 Project Status: **COMPLETE & READY FOR DEPLOYMENT**
+Stage 3 of the study pipeline:
 
-This application is fully implemented, tested, and ready for production use. All core requirements have been met with enhanced features for seamless Qualtrics integration.
+```
+AITA-Data-Analysis  →  Generating-Explanations  →  chat-research-interface  →  Post-Study-Analysis
+                                                       (this repo)                  (analysis)
+                                                                                          ↑
+                                                                                   Data_Wrangling
+```
 
-## 🚀 Key Features
+## Features
 
-### **✅ Enhanced Research Capabilities**
-- **8 Curated Scenarios**: 4 AITA (moral reasoning) + 4 sexism scenarios with unique AI perspectives
-- **Persistent Prolific ID**: Users enter ID once, works across all embedded scenarios  
-- **Start Button Control**: Interactive overlay prevents accidental interactions when embedded
-- **Direct Scenario Embedding**: Each scenario embeds directly into Qualtrics (no landing page needed)
-- **Controlled Session Start**: Users must explicitly click "Start Scenario" before timer begins
-- **Complete Data Collection**: Full conversation history, timing, and participant tracking
-- **Session Management**: 3-minute timeout with automatic data preservation and locked chat interface
-- **Safety Features**: Content moderation and respectful AI responses for sensitive topics
+- **8 scenarios** — 4 AITA + 4 sexism, each with an AI starting opinion (sourced from the upstream Generating-Explanations repo).
+- **Persistent Prolific ID** across all embedded scenarios — participant enters it once.
+- **Start-button gate** prevents accidental session start when iframed in Qualtrics.
+- **3-minute session timer** with auto-save and chat lock on timeout.
+- **Server-side OpenAI proxy** — the `OPENAI_API_KEY` lives only in the Vercel function (`api/chat.js`); never bundled into client JS.
+- **Supabase + RLS** for storage; `participants`, `conversations`, `messages` tables (schema in `supabase-setup.sql`).
+- **Content moderation** before the call to OpenAI for sensitive topics.
 
-### **✅ Technical Excellence**
-- **Modern React + TypeScript**: Clean, maintainable codebase
-- **OpenAI Integration**: `gpt-5.5-2026-04-23` via Responses API, proxied server-side so the key is never exposed
-- **Supabase Database**: Scalable PostgreSQL backend with real-time analytics
-- **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
-- **Production Security**: Environment variable protection, content filtering, data encryption
-- **One-Click Deployment**: Vercel-optimized with automatic scaling
+## Stack
+
+- React + TypeScript (CRA)
+- OpenAI `gpt-5.5-2026-04-23` via the Responses API, proxied through `api/chat.js`
+- Supabase Postgres + RLS
+- Vercel (functions + hosting)
 
 ## Quick Start
 
@@ -273,13 +275,14 @@ src/
 4. Update documentation for any changes
 5. Submit pull requests with clear descriptions
 
-## 📚 Additional Documentation
+## Additional documentation
 
-- **`DEPLOYMENT.md`** - Complete Vercel deployment guide
-- **`QUALTRICS_INTEGRATION.md`** - Detailed Qualtrics survey embedding instructions  
-- **`SUPABASE_SETUP.md`** - Database setup and configuration
-- **`IMPLEMENTATION_SUMMARY.md`** - Complete feature overview and status
-- **`.env.example`** - Environment variables template
+- [`DEPLOYMENT.md`](./DEPLOYMENT.md) — Vercel deployment guide
+- [`QUALTRICS_INTEGRATION.md`](./QUALTRICS_INTEGRATION.md) — Qualtrics survey embedding
+- [`IMPLEMENTATION_SUMMARY.md`](./IMPLEMENTATION_SUMMARY.md) — feature & status overview
+- [`FILE_STRUCTURE.md`](./FILE_STRUCTURE.md) — repo layout
+- [`.env.example`](./.env.example) — environment variable template
+- [`supabase-setup.sql`](./supabase-setup.sql) — DB schema + RLS policies
 
 ## Support
 

@@ -188,7 +188,7 @@ Your research interface is **production-ready** with:
 1. **`README.md`** - Project overview and quick start
 2. **`DEPLOYMENT.md`** - Complete Vercel deployment guide  
 3. **`QUALTRICS_INTEGRATION.md`** - Detailed survey embedding instructions
-4. **`SUPABASE_SETUP.md`** - Database configuration guide
+4. **`supabase-setup.sql`** — Database schema and RLS policies (apply in Supabase SQL editor)
 5. **`.env.example`** - Environment variable template
 6. This **`IMPLEMENTATION_SUMMARY.md`** - Complete feature overview
 
