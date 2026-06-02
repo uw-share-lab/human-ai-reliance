@@ -1,6 +1,6 @@
 # Chat Research Interface
 
-React + TypeScript app that runs the interactive portion of the **Human-AI Reliance** study (Ferguson lab, University of Waterloo). Participants are routed to a specific moral-reasoning (AITA) or gender-bias (sexism) scenario, hold a short timed conversation with an AI, and have the full transcript saved to Supabase for later analysis.
+React + TypeScript app that runs the interactive portion of the **Human-AI Reliance** study ([SHARE Lab](https://uwshare-lab.ca), University of Waterloo). Participants are routed to a specific moral-reasoning (AITA) or gender-bias (sexism) scenario, hold a short timed conversation with an AI, and have the full transcript saved to Supabase for later analysis.
 
 Stage 3 of the study pipeline:
 
