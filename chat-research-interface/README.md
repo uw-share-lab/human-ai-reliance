@@ -20,7 +20,7 @@ This application is fully implemented, tested, and ready for production use. All
 
 ### **✅ Technical Excellence**
 - **Modern React + TypeScript**: Clean, maintainable codebase
-- **OpenAI GPT-4 Integration**: Advanced conversational AI with research-focused prompts
+- **OpenAI Integration**: `gpt-5.5-2026-04-23` via Responses API, proxied server-side so the key is never exposed
 - **Supabase Database**: Scalable PostgreSQL backend with real-time analytics
 - **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
 - **Production Security**: Environment variable protection, content filtering, data encryption
@@ -29,7 +29,7 @@ This application is fully implemented, tested, and ready for production use. All
 ## Quick Start
 
 ### Prerequisites
-- Node.js 16+ 
+- Node.js 18+
 - Supabase account and project
 - OpenAI API key
 - Vercel account (for deployment)
@@ -46,9 +46,12 @@ This application is fully implemented, tested, and ready for production use. All
 2. **Environment setup**:
    Create `.env` file:
    ```env
-   REACT_APP_OPENAI_API_KEY=your_openai_api_key_here
+   # Server-side only — never exposed to the browser
+   OPENAI_API_KEY=your_openai_api_key_here
+
+   # Client-side Supabase (safe to expose)
    REACT_APP_SUPABASE_URL=your_supabase_project_url
-   REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
+   REACT_APP_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
    REACT_APP_DEFAULT_TIMEOUT=3
    ```
 
@@ -58,9 +61,9 @@ This application is fully implemented, tested, and ready for production use. All
 
 4. **Start development**:
    ```bash
-   npm start
+   vercel dev
    ```
-   Visit `http://localhost:3000`
+   Visit `http://localhost:3000`. Use `vercel dev` (not `npm start`) so the `/api/chat` serverless function runs locally alongside the React app.
 
 ## Usage
 
@@ -114,7 +117,7 @@ Each scenario includes:
 
 ### Backend Services
 - **Database**: Supabase PostgreSQL with real-time capabilities
-- **AI Integration**: OpenAI GPT-4 with custom prompts and safety
+- **AI Integration**: OpenAI `gpt-5.5-2026-04-23` via the Responses API (`/v1/responses`), proxied through a Vercel serverless function (`api/chat.js`) — the API key never reaches the browser
 - **Authentication**: Supabase anonymous access with participant tracking
 
 ### Data Model
@@ -150,15 +153,20 @@ participants
 4. **Custom Domain**: Configure your research domain in Vercel
 
 ### Environment Variables for Production
+Set these in the Vercel dashboard (Settings → Environment Variables):
+
 ```bash
-REACT_APP_OPENAI_API_KEY=sk-proj-...
-REACT_APP_SUPABASE_URL=https://your-project.supabase.co  
-REACT_APP_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIs...
+# Server-only — set as Production + Preview, never exposed to browser
+OPENAI_API_KEY=sk-proj-...
+
+# Client-side — safe to expose, prefixed with REACT_APP_
+REACT_APP_SUPABASE_URL=https://your-project.supabase.co
+REACT_APP_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 REACT_APP_DEFAULT_TIMEOUT=3
 ```
 
 ### Security Considerations
-- API keys are environment variables only
+- **OpenAI API key is server-side only** — lives in `OPENAI_API_KEY` (no `REACT_APP_` prefix), proxied through `api/chat.js`. It is never bundled into client JavaScript.
 - Supabase RLS (Row Level Security) enabled
 - Content moderation for inappropriate messages
 - No personal data stored beyond Prolific IDs
@@ -200,20 +208,22 @@ ORDER BY c.start_time, m.sequence_number;
 
 ### Project Structure
 ```
+api/
+└── chat.js                  # Serverless function — OpenAI proxy (key never in browser)
 src/
-├── components/          # React components
-│   ├── ChatInterface.tsx    # Main chat interface
-│   ├── Home.tsx            # Scenario selection page  
-│   └── ScenarioRouter.tsx  # Route validation
-├── data/               # Static data
-│   └── scenarios.ts        # All scenario definitions
-├── services/           # External integrations
-│   ├── conversationService.ts  # Database operations
-│   ├── openaiService.ts       # AI chat integration
-│   └── supabaseClient.ts     # Database client
-├── styles/             # CSS files
-├── types/              # TypeScript definitions
-└── App.tsx             # Main application
+├── components/              # React components
+│   ├── ChatInterface.tsx        # Main chat interface
+│   ├── Home.tsx                # Scenario selection page
+│   └── ScenarioRouter.tsx      # Route validation
+├── data/                    # Static data
+│   └── scenarios.ts             # All scenario definitions
+├── services/                # External integrations
+│   ├── conversationService.ts   # Database operations
+│   ├── openaiService.ts         # Calls /api/chat (no key here)
+│   └── supabaseClient.ts        # Database client
+├── styles/                  # CSS files
+├── types/                   # TypeScript definitions
+└── App.tsx                  # Main application
 ```
 
 ### Adding New Scenarios
@@ -223,10 +233,9 @@ src/
 4. Update documentation
 
 ### Customizing AI Behavior
-Modify `src/services/openaiService.ts`:
-- Adjust system prompts for different conversation styles
-- Update safety filtering rules
-- Change response length or creativity settings
+- **System prompt / conversation style**: edit `buildSystemPrompt()` in `api/chat.js`
+- **Safety filtering rules**: edit `isContentAppropriate()` in `src/services/openaiService.ts`
+- **Response length or model**: edit `max_output_tokens` and `model` in `api/chat.js`
 
 ## Troubleshooting
 
