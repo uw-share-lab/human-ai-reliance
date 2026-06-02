@@ -1,6 +1,6 @@
 # Generating Explanations
 
-GPT-generated explanations for the AITA and sexism scenarios used in the **Human-AI Reliance** study (Ferguson lab, University of Waterloo). These explanations are the AI-side stimulus shown to participants in the downstream interactive study.
+GPT-generated explanations for the AITA and sexism scenarios used in the **Human-AI Reliance** study ([SHARE Lab](https://uwshare-lab.ca), University of Waterloo). These explanations are the AI-side stimulus shown to participants in the downstream interactive study.
 
 Stage 2 of the study pipeline:
 
@@ -22,19 +22,22 @@ For each scenario in `AITA_Examples.xlsx` and `Sexism_Examples.xlsx`, the notebo
 
 ```
 ├── generation.ipynb               # Main notebook — generates the explanations
-├── AITA_Examples.xlsx             # Input: AITA scenarios (gitignored)
-├── Sexism_Examples.xlsx           # Input: sexism scenarios (gitignored)
-├── AITA_Final_Dataset.csv         # Output: AITA scenarios + explanations (gitignored)
-├── Sexism_Final_Dataset.csv      # Output: sexism scenarios + explanations (gitignored)
-├── AITA_explanations.{txt,yaml}   # Output, two formats (gitignored)
-└── Sexism_explanations.{txt,yaml} # Output, two formats (gitignored)
+└── data/
+    ├── AITA/                      (gitignored contents)
+    │   ├── AITA_Examples.xlsx         # Input: AITA scenarios
+    │   ├── AITA_Final_Dataset.csv     # Output: scenarios + explanations
+    │   └── AITA_explanations.{txt,yaml}
+    └── Sexism/                    (gitignored contents)
+        ├── Sexism_Examples.xlsx       # Input: sexism scenarios
+        ├── Sexism_Final_Dataset.csv   # Output: scenarios + explanations
+        └── Sexism_explanations.{txt,yaml}
 ```
 
 ## Data access
 
 The input `.xlsx` files and all generated outputs (CSV / TXT / YAML) are **not in this repo** — they're gitignored because they contain study materials we don't redistribute publicly. The AITA scenarios are derived from the upstream [AITA-Data-Analysis](https://github.com/LLM-Reliance-Project/AITA-Data-Analysis) sampling pipeline; the final consumer is [chat-research-interface](https://github.com/LLM-Reliance-Project/chat-research-interface), which serves the explanations to study participants.
 
-To run the notebook end-to-end you need both `AITA_Examples.xlsx` and `Sexism_Examples.xlsx` in the repo root — request from the authors.
+To run the notebook end-to-end you need both `AITA_Examples.xlsx` and `Sexism_Examples.xlsx` placed under `data/AITA/` and `data/Sexism/` respectively — request from the authors.
 
 ## Setup
 
