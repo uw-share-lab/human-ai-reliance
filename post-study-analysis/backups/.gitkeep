@@ -1,0 +1,3 @@
+# Point-in-time pg_dump archives of the Supabase cluster.
+# NOT consumed by any script — purely for disaster recovery.
+# All *.gz / *.backup / *.dump are gitignored — see ../.gitignore

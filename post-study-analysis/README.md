@@ -35,18 +35,20 @@ Post-Study-Analysis/
 ├── raw/                                        (gitignored contents)
 │   ├── conversations_rows.csv                  ← Supabase "Export rows" CSV
 │   ├── messages_rows.csv                       ← Supabase "Export rows" CSV
-│   ├── participants_rows.csv                   ← Supabase "Export rows" CSV
-│   └── db_cluster-*.backup.gz                  ← pg_dump archive (optional)
+│   └── participants_rows.csv                   ← Supabase "Export rows" CSV
 │
 ├── merged/                                     (gitignored contents)
 │   ├── conversations_merged.csv                ← fix_duplicates.py output
 │   ├── messages_merged.csv
 │   └── participants_merged.csv
 │
-└── analysis/                                   (gitignored contents)
-    ├── messages_clean.csv                      ← engagement_metrics.py output
-    ├── conversation_engagement_metrics.csv     ← metrics, one row per conversation
-    └── conversation_transcripts_for_scoring.csv  ← fill score + notes by hand
+├── analysis/                                   (gitignored contents)
+│   ├── messages_clean.csv                      ← engagement_metrics.py output
+│   ├── conversation_engagement_metrics.csv     ← metrics, one row per conversation
+│   └── conversation_transcripts_for_scoring.csv  ← fill score + notes by hand
+│
+└── backups/                                    (gitignored contents)
+    └── db_cluster-*.backup.gz                  ← pg_dump archive, NOT used by any script
 ```
 
 ## Outputs
@@ -80,7 +82,7 @@ The Supabase DDL is in [`schema.sql`](./schema.sql) for context only (not meant 
 Supabase gives you two ways to export the participant data:
 
 1. **Per-table CSV exports** (Supabase dashboard → table → "Export to CSV"). Suffix `_rows.csv`. This is what `fix_duplicates.py` consumes directly — put them in `raw/`.
-2. **`pg_dump` cluster backup** (`.backup.gz`). Whole-cluster binary dump — needs `pg_restore` into a Postgres instance to read. Useful as a point-in-time archive, but not the script's input. If you have one, drop it in `raw/` for safekeeping.
+2. **`pg_dump` cluster backup** (`.backup.gz`). Whole-cluster binary dump — needs `pg_restore` into a Postgres instance to read. **Not used by the scripts** — kept in `backups/` as a point-in-time archive for disaster recovery only.
 
 If you only have the `.gz`, you'll need to restore it into a local Postgres and re-export the three tables as CSVs before running the pipeline.
 
