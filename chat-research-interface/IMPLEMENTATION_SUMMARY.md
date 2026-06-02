@@ -29,7 +29,7 @@ Your Chat Research Interface is **100% complete, tested, and optimized for produ
 ### ✅ **Technical Implementation:**
 - **React + TypeScript**: Modern, maintainable codebase
 - **Supabase Database**: Scalable PostgreSQL backend with real-time analytics
-- **OpenAI GPT-4**: Advanced conversational AI with research-focused prompts
+- **OpenAI `gpt-5.5-2026-04-23`**: Responses API, proxied server-side via `api/chat.js` — key never exposed to browser
 - **Vercel Deployment**: Production-ready hosting with automatic scaling
 - **Security**: API key protection, content filtering, data encryption
 
@@ -159,7 +159,7 @@ GROUP BY prolific_id;
 
 ### **Easy Modifications:**
 - **Scenarios**: Edit `src/data/scenarios.ts` to add/modify scenarios
-- **AI Behavior**: Adjust prompts in `src/services/openaiService.ts`
+- **AI Behavior**: Adjust system prompt and model settings in `api/chat.js`
 - **Timeout Duration**: Change `REACT_APP_DEFAULT_TIMEOUT` environment variable
 - **Styling**: Update CSS files for custom branding
 - **Additional Data**: Extend database schema for new metrics

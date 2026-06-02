@@ -9,7 +9,7 @@ This guide covers deploying the **production-ready** Chat Research Interface to 
 Before deploying, ensure you have:
 
 - ✅ **Supabase Database**: Set up using `SUPABASE_SETUP.md`
-- ✅ **OpenAI API Key**: GPT-4 access for chat functionality
+- ✅ **OpenAI API Key**: Required for `gpt-5.5-2026-04-23` via Responses API
 - ✅ **GitHub Repository**: All code committed and pushed
 - ✅ **Vercel Account**: Free or paid plan
 - ✅ **Clean Codebase**: All unnecessary files removed
@@ -46,31 +46,17 @@ The `vercel.json` file references environment variables using Vercel's `@` synta
 
 **In Vercel Dashboard → Settings → Environment Variables:**
 
-| Variable Name       | Value                              | Notes                       |
-| ------------------- | ---------------------------------- | --------------------------- |
-| `openai_api_key`    | `sk-proj-your-actual-key`          | ⚠️ Your OpenAI API key      |
-| `supabase_url`      | `https://your-project.supabase.co` | Your Supabase project URL   |
-| `supabase_anon_key` | `eyJhbGciOiJIUzI1NiIs...`          | Your Supabase anonymous key |
-
-**The `vercel.json` file maps these to React environment variables:**
-
-```json
-{
-  "build": {
-    "env": {
-      "REACT_APP_OPENAI_API_KEY": "@openai_api_key",
-      "REACT_APP_SUPABASE_URL": "@supabase_url",
-      "REACT_APP_SUPABASE_ANON_KEY": "@supabase_anon_key",
-      "REACT_APP_DEFAULT_TIMEOUT": "5"
-    }
-  }
-}
-```
+| Variable Name                      | Notes                                                       |
+| ---------------------------------- | ----------------------------------------------------------- |
+| `OPENAI_API_KEY`                   | ⚠️ Server-only — no `REACT_APP_` prefix, never in browser  |
+| `REACT_APP_SUPABASE_URL`           | Your Supabase project URL                                   |
+| `REACT_APP_SUPABASE_PUBLISHABLE_KEY` | Your Supabase publishable key (`sb_publishable_...`)      |
+| `REACT_APP_DEFAULT_TIMEOUT`        | Session timeout in minutes (e.g. `3`)                       |
 
 **Security Notes:**
 
-- ✅ `vercel.json` is safe to commit (contains no secrets)
-- ✅ Environment variable references use `@` syntax (not actual values)
+- ✅ `OPENAI_API_KEY` has no `REACT_APP_` prefix — Vercel only exposes it to serverless functions, never the browser bundle
+- ✅ OpenAI calls are proxied through `api/chat.js` — the key is never in client JavaScript
 - ✅ Actual secrets are stored securely in Vercel dashboard
 - ⚠️ Never commit `.env` file with real API keys
 
@@ -306,9 +292,9 @@ GROUP BY study_type;
 
 ### OpenAI Rate Limits
 
-- **GPT-4**: 500 requests/minute on paid plans
+- **gpt-5.5-2026-04-23** (Responses API): check your tier limits at platform.openai.com
 - **Usage Monitoring**: Set up billing alerts
-- **Error Handling**: Implement retry logic and graceful degradation
+- **Error Handling**: `api/chat.js` retries up to 3 times with exponential backoff on 429/5xx
 
 ## 🔍 Post-Deployment Verification
 
