@@ -66,8 +66,12 @@ Post-Study-Analysis/
 │   ├── threshold_turns2_words20.csv            ← non-engager list: turns<2 AND words<20
 │   ├── threshold_turns2_words30.csv            ← non-engager list: turns<2 AND words<30
 │   ├── plots/                                  ← distribution figures (png)
-│   └── scoring/                               (gitignored — contains participant data)
-│       └── <scenario_id>.yaml                  ← generate_scoring_yaml.py output
+│   ├── scoring/                               (gitignored — contains participant data)
+│   │   └── <scenario_id>.yaml                  ← all conversations
+│   ├── scoring_words20/                       (gitignored — contains participant data)
+│   │   └── <scenario_id>.yaml                  ← non-engagers (words<20) + test IDs removed
+│   └── scoring_words30/                       (gitignored — contains participant data)
+│       └── <scenario_id>.yaml                  ← non-engagers (words<30) + test IDs removed
 │
 └── backups/                                    (gitignored contents)
     └── db_cluster-*.backup.gz                  ← pg_dump archive, NOT used by any script
@@ -83,7 +87,9 @@ Post-Study-Analysis/
 | `analysis/messages_clean.csv` | `engagement_metrics.py` | Cleaned messages joined with conversation metadata; word counts attached. |
 | `analysis/conversation_engagement_metrics.csv` | `engagement_metrics.py` | One row per conversation — quantitative metrics, ready to merge into the main study dataset. |
 | `analysis/conversation_transcripts_for_scoring.csv` | `engagement_metrics.py` | Same rows + full formatted transcript; intermediate input for steps 3 & 4. |
-| `analysis/scoring/<scenario_id>.yaml` | `generate_scoring_yaml.py` | One YAML file per scenario (~30–33 conversations each). Scorers fill `qualitative_score` and `notes` in-place. |
+| `analysis/scoring/<scenario_id>.yaml` | `generate_scoring_yaml.py` | All conversations, one YAML per scenario. Scorers fill `qualitative_score` and `notes` in-place. |
+| `analysis/scoring_words20/<scenario_id>.yaml` | `generate_scoring_yaml.py` | Same, with non-engagers (turns<2 AND words<20) and test participants removed (226 conversations). |
+| `analysis/scoring_words30/<scenario_id>.yaml` | `generate_scoring_yaml.py` | Same, with non-engagers (turns<2 AND words<30) and test participants removed (211 conversations). |
 | `analysis/engagement_thresholds.txt` | `engagement_thresholds.py` | Exclusion counts at every turns/words/combined threshold. Reference when deciding the non-engager cutoff. |
 | `analysis/hard_exclusions_test_participants.csv` | `engagement_thresholds.py` | Pilot/test Prolific IDs (`123456789101112`, `methodologies`) — exclude from all analyses unconditionally. |
 | `analysis/threshold_turns2_words20.csv` | `engagement_thresholds.py` | Non-engager list A: turns < 2 AND total words < 20 (24 conversation-scenario pairs). |
@@ -143,7 +149,7 @@ source .venv/bin/activate
 
 python scripts/fix_duplicates.py          # step 1: dedup → merged/
 python scripts/engagement_metrics.py      # step 2: metrics + transcripts → analysis/
-python scripts/generate_scoring_yaml.py   # step 3: per-scenario YAML → analysis/scoring/
+python scripts/generate_scoring_yaml.py   # step 3: all + filtered YAML sets → analysis/scoring*/
 python scripts/engagement_thresholds.py   # step 4: threshold analysis + exclusion lists → analysis/
 ```
 

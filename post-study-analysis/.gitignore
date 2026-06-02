@@ -8,6 +8,8 @@
 
 # Generated scoring files contain participant data (Prolific IDs + transcripts)
 analysis/scoring/
+analysis/scoring_words20/
+analysis/scoring_words30/
 
 # Python
 __pycache__/
