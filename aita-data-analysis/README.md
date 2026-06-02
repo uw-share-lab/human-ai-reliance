@@ -6,10 +6,8 @@ This repo is the first stage of the study pipeline:
 
 ```
 AITA-Data-Analysis  →  Generating-Explanations  →  chat-research-interface  →  Post-Study-Analysis
-   (this repo)              (LLM judgments)            (participant study)         (engagement metrics)
-                                                              ↑
-                                                        Data_Wrangling
-                                                        (DB-export merge)
+   (this repo)              (LLM judgments)            (participant study)       (DB-export merge +
+                                                                                  engagement metrics)
 ```
 
 It ingests the raw Reddit dump (submissions + comments), produces stratified samples by engagement or by verdict, and provides interactive scripts for selecting the final scenarios used downstream.
