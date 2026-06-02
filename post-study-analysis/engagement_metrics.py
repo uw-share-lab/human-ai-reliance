@@ -1,10 +1,14 @@
+import os
 import pandas as pd
 
-MESSAGES_PATH = "messages_merged.csv"
-CONVERSATIONS_PATH = "conversations_merged.csv"
-OUT_MESSAGES_CLEAN = "messages_clean.csv"
-OUT_METRICS = "conversation_engagement_metrics.csv"
-OUT_TRANSCRIPTS = "conversation_transcripts_for_scoring.csv"
+MERGED_DIR = "merged"
+ANALYSIS_DIR = "analysis"
+
+MESSAGES_PATH = os.path.join(MERGED_DIR, "messages_merged.csv")
+CONVERSATIONS_PATH = os.path.join(MERGED_DIR, "conversations_merged.csv")
+OUT_MESSAGES_CLEAN = os.path.join(ANALYSIS_DIR, "messages_clean.csv")
+OUT_METRICS = os.path.join(ANALYSIS_DIR, "conversation_engagement_metrics.csv")
+OUT_TRANSCRIPTS = os.path.join(ANALYSIS_DIR, "conversation_transcripts_for_scoring.csv")
 
 THREE_MINUTES_MS = 3 * 60 * 1000
 
@@ -24,6 +28,8 @@ def build_transcript(group):
 
 
 def main():
+    os.makedirs(ANALYSIS_DIR, exist_ok=True)
+
     # --- Load ---
     msgs = pd.read_csv(MESSAGES_PATH)
     conv_df = pd.read_csv(CONVERSATIONS_PATH)

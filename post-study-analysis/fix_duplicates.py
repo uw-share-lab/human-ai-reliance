@@ -3,16 +3,21 @@
 Script to fix duplicate conversations and merge AI explanations.
 """
 
+import os
 import pandas as pd
 import numpy as np
 from datetime import datetime
 
+RAW_DIR = "raw"
+MERGED_DIR = "merged"
+
+
 def load_data():
     """Load CSV files into DataFrames"""
-    conversations_df = pd.read_csv('conversations_rows.csv')
-    messages_df = pd.read_csv('messages_rows.csv')
-    participants_df = pd.read_csv('participants_rows.csv')
-    
+    conversations_df = pd.read_csv(os.path.join(RAW_DIR, 'conversations_rows.csv'))
+    messages_df = pd.read_csv(os.path.join(RAW_DIR, 'messages_rows.csv'))
+    participants_df = pd.read_csv(os.path.join(RAW_DIR, 'participants_rows.csv'))
+
     return conversations_df, messages_df, participants_df
 
 def identify_duplicates(conversations_df):
@@ -152,14 +157,15 @@ def main():
     print(f"Merged messages: {len(merged_messages_df)}")
     
     # Save the merged data
+    os.makedirs(MERGED_DIR, exist_ok=True)
     print("\nSaving merged data...")
-    merged_conversations_df.to_csv('conversations_merged.csv', index=False)
-    merged_messages_df.to_csv('messages_merged.csv', index=False)
-    participants_df.to_csv('participants_merged.csv', index=False)  # Participants unchanged
-    
-    print("Done! Files saved as:")
+    merged_conversations_df.to_csv(os.path.join(MERGED_DIR, 'conversations_merged.csv'), index=False)
+    merged_messages_df.to_csv(os.path.join(MERGED_DIR, 'messages_merged.csv'), index=False)
+    participants_df.to_csv(os.path.join(MERGED_DIR, 'participants_merged.csv'), index=False)  # unchanged
+
+    print(f"Done! Files saved to {MERGED_DIR}/:")
     print("- conversations_merged.csv")
-    print("- messages_merged.csv") 
+    print("- messages_merged.csv")
     print("- participants_merged.csv")
     
     # Show summary

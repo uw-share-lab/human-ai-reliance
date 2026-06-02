@@ -1,0 +1,5 @@
+# Output of engagement_metrics.py:
+#   messages_clean.csv
+#   conversation_engagement_metrics.csv
+#   conversation_transcripts_for_scoring.csv
+# All *.csv are gitignored — see ../.gitignore

@@ -22,16 +22,43 @@ chat-research-interface (Supabase)
    └─────────────────────────────┘
 ```
 
+## Directory layout
+
+```
+Post-Study-Analysis/
+├── fix_duplicates.py
+├── engagement_metrics.py
+├── schema.sql                                  # Supabase DDL, context only
+├── requirements.txt
+├── README.md
+│
+├── raw/                                        (gitignored contents)
+│   ├── conversations_rows.csv                  ← Supabase "Export rows" CSV
+│   ├── messages_rows.csv                       ← Supabase "Export rows" CSV
+│   ├── participants_rows.csv                   ← Supabase "Export rows" CSV
+│   └── db_cluster-*.backup.gz                  ← pg_dump archive (optional)
+│
+├── merged/                                     (gitignored contents)
+│   ├── conversations_merged.csv                ← fix_duplicates.py output
+│   ├── messages_merged.csv
+│   └── participants_merged.csv
+│
+└── analysis/                                   (gitignored contents)
+    ├── messages_clean.csv                      ← engagement_metrics.py output
+    ├── conversation_engagement_metrics.csv     ← metrics, one row per conversation
+    └── conversation_transcripts_for_scoring.csv  ← fill score + notes by hand
+```
+
 ## Outputs
 
 | File | Produced by | Description |
 |---|---|---|
-| `conversations_merged.csv` | `fix_duplicates.py` | Conversations with duplicate `(prolific_id, scenario_id)` rows collapsed (earliest start, latest end, summed interactions). |
-| `messages_merged.csv` | `fix_duplicates.py` | All messages reassigned to the surviving conversation; per-conversation AI messages concatenated into one. |
-| `participants_merged.csv` | `fix_duplicates.py` | Pass-through, unchanged. |
-| `messages_clean.csv` | `engagement_metrics.py` | Cleaned messages joined with conversation metadata; word counts attached. |
-| `conversation_engagement_metrics.csv` | `engagement_metrics.py` | One row per conversation — quantitative metrics, ready to merge into the main study dataset. |
-| `conversation_transcripts_for_scoring.csv` | `engagement_metrics.py` | Same rows + full formatted transcript; fill `qualitative_score` (1–5) and `notes` columns by hand. |
+| `merged/conversations_merged.csv` | `fix_duplicates.py` | Conversations with duplicate `(prolific_id, scenario_id)` rows collapsed (earliest start, latest end, summed interactions). |
+| `merged/messages_merged.csv` | `fix_duplicates.py` | All messages reassigned to the surviving conversation; per-conversation AI messages concatenated into one. |
+| `merged/participants_merged.csv` | `fix_duplicates.py` | Pass-through, unchanged. |
+| `analysis/messages_clean.csv` | `engagement_metrics.py` | Cleaned messages joined with conversation metadata; word counts attached. |
+| `analysis/conversation_engagement_metrics.csv` | `engagement_metrics.py` | One row per conversation — quantitative metrics, ready to merge into the main study dataset. |
+| `analysis/conversation_transcripts_for_scoring.csv` | `engagement_metrics.py` | Same rows + full formatted transcript; fill `qualitative_score` (1–5) and `notes` columns by hand. |
 
 ### Metrics produced
 
@@ -44,9 +71,18 @@ chat-research-interface (Supabase)
 
 ## Data access
 
-**No participant data is in this repo.** Every `*.csv`, `*.xlsx`, and DB backup is gitignored — the rows contain Prolific IDs, IP addresses, user agents, and full transcripts. Request the Supabase export from the study authors.
+**No participant data is in this repo.** Every `*.csv`, `*.xlsx`, `*.gz`, and `*.backup` is gitignored — the rows contain Prolific IDs, IP addresses, user agents, and full transcripts. Request the Supabase export from the study authors.
 
 The Supabase DDL is in [`schema.sql`](./schema.sql) for context only (not meant to be executed).
+
+### Two raw-input formats
+
+Supabase gives you two ways to export the participant data:
+
+1. **Per-table CSV exports** (Supabase dashboard → table → "Export to CSV"). Suffix `_rows.csv`. This is what `fix_duplicates.py` consumes directly — put them in `raw/`.
+2. **`pg_dump` cluster backup** (`.backup.gz`). Whole-cluster binary dump — needs `pg_restore` into a Postgres instance to read. Useful as a point-in-time archive, but not the script's input. If you have one, drop it in `raw/` for safekeeping.
+
+If you only have the `.gz`, you'll need to restore it into a local Postgres and re-export the three tables as CSVs before running the pipeline.
 
 ## Setup
 
