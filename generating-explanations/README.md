@@ -1,103 +1,78 @@
 # Generating Explanations
 
-This project generates AI explanations for two types of scenarios using OpenAI's GPT models:
-1. **AITA (Am I The Asshole)** scenarios from Reddit posts
-2. **Sexism detection** scenarios for bias classification
+GPT-generated explanations for the AITA and sexism scenarios used in the **Human-AI Reliance** study (Ferguson lab, University of Waterloo). These explanations are the AI-side stimulus shown to participants in the downstream interactive study.
 
-## Overview
-
-The project uses GPT-4.1 to generate detailed explanations that analyze:
-- Whether someone is at fault in AITA scenarios 
-- Whether given scenarios contain sexist content or behavior
-
-The generated explanations provide 3-5 sentence judgments with reasoning for each scenario.
-
-## Project Structure
+Stage 2 of the study pipeline:
 
 ```
-├── generation.ipynb           # Main Jupyter notebook for generating explanations
-├── AITA_Examples.xlsx         # Input dataset with AITA scenarios
-├── Sexism_Examples.xlsx       # Input dataset with sexism scenarios  
-├── AITA_Final_Dataset.csv     # Processed AITA data with explanations
-├── Sexism_Final_Dataset.csv   # Processed sexism data with explanations
-├── AITA_explanations.txt      # Human-readable AITA explanations
-├── Sexism_explanations.txt    # Human-readable sexism explanations
-├── AITA_explanations.yaml     # Structured AITA explanations
-├── Sexism_explanations.yaml   # Structured sexism explanations
-└── venv/                      # Python virtual environment
+AITA-Data-Analysis  →  Generating-Explanations  →  chat-research-interface  →  Post-Study-Analysis
+                          (this repo)                                             (analysis)
+                                                                                       ↑
+                                                                                Data_Wrangling
 ```
 
-## Requirements
+## What it does
 
-- Python 3.11+
-- OpenAI API key
-- Required packages (see notebook imports):
-  - openai
-  - pandas
-  - numpy
-  - python-dotenv
-  - pyyaml
-  - openpyxl
+For each scenario in `AITA_Examples.xlsx` and `Sexism_Examples.xlsx`, the notebook:
+1. Cleans the input (e.g. combining multi-row AITA posts).
+2. Calls OpenAI (GPT-4.1) to produce a 3–5 sentence judgment + reasoning.
+3. Writes results in three formats — CSV (analysis), TXT (review), YAML (programmatic use).
+
+## Project structure
+
+```
+├── generation.ipynb               # Main notebook — generates the explanations
+├── AITA_Examples.xlsx             # Input: AITA scenarios (gitignored)
+├── Sexism_Examples.xlsx           # Input: sexism scenarios (gitignored)
+├── AITA_Final_Dataset.csv         # Output: AITA scenarios + explanations (gitignored)
+├── Sexism_Final_Dataset.csv      # Output: sexism scenarios + explanations (gitignored)
+├── AITA_explanations.{txt,yaml}   # Output, two formats (gitignored)
+└── Sexism_explanations.{txt,yaml} # Output, two formats (gitignored)
+```
+
+## Data access
+
+The input `.xlsx` files and all generated outputs (CSV / TXT / YAML) are **not in this repo** — they're gitignored because they contain study materials we don't redistribute publicly. The AITA scenarios are derived from the upstream [AITA-Data-Analysis](https://github.com/LLM-Reliance-Project/AITA-Data-Analysis) sampling pipeline; the final consumer is [chat-research-interface](https://github.com/LLM-Reliance-Project/chat-research-interface), which serves the explanations to study participants.
+
+To run the notebook end-to-end you need both `AITA_Examples.xlsx` and `Sexism_Examples.xlsx` in the repo root — request from the authors.
 
 ## Setup
 
-1. Create a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+Requires Python 3.11+ and an OpenAI API key.
 
-2. Install dependencies:
-   ```bash
-   pip install openai pandas numpy python-dotenv pyyaml openpyxl
-   ```
-
-3. Set up environment variables:
-   Create a `.env` file with your OpenAI API key:
-   ```
-   OPEN_AI_API=your_openai_api_key_here
-   ```
-
-## Usage
-
-1. Open `generation.ipynb` in Jupyter Notebook or JupyterLab
-2. Run all cells to process the datasets and generate explanations
-3. The notebook will:
-   - Load AITA and sexism scenarios from Excel files
-   - Clean and process the AITA scenarios (combining multi-row posts)
-   - Generate explanations using GPT-4.1
-   - Save results in multiple formats (CSV, TXT, YAML)
-
-## Output Files
-
-### AITA Dataset
-- **AITA_Final_Dataset.csv**: Complete dataset with titles, scenarios, verdicts, shortened scenarios, and GPT explanations
-- **AITA_explanations.txt**: Human-readable format with titles and explanations
-- **AITA_explanations.yaml**: Structured format for programmatic access
-
-### Sexism Dataset  
-- **Sexism_Final_Dataset.csv**: Complete dataset with scenarios, verdicts, and GPT explanations
-- **Sexism_explanations.txt**: Human-readable format with explanations
-- **Sexism_explanations.yaml**: Structured format for programmatic access
-
-## Sample Output
-
-### AITA Explanation
-```
-**Conclusion/TLDR:** The post author is not at fault in this scenario. They are simply asking others to follow the clearly posted, city-mandated leash laws for everyone's safety—a reasonable and responsible action...
+```bash
+python -m venv venv
+source venv/bin/activate            # Windows: venv\Scripts\activate
+pip install openai pandas numpy python-dotenv pyyaml openpyxl
 ```
 
-### Sexism Explanation  
+Create a `.env` file:
+
 ```
-Yes, this scenario is sexist. It places an unfair expectation on women based solely on their gender, disregarding their personal autonomy and choices...
+OPEN_AI_API=sk-...
 ```
 
-## Research Purpose
+> **Note:** `.env` is gitignored. Anyone with commit access should rotate the key if it ever lands in a tracked file.
 
-This project generates explanations for machine learning research on:
-- Bias detection and classification
-- Moral reasoning in AI systems
-- Automated content moderation
-- Social scenario analysis
+## Run
 
-The explanations can be used as training data or evaluation benchmarks for AI systems that need to understand and explain social situations and potential biases.
+```bash
+jupyter notebook generation.ipynb
+```
+
+Run all cells. Generation is roughly linear in the number of scenarios × the average response length; budget a few minutes per dataset.
+
+## Sample output
+
+**AITA**
+```
+Conclusion/TLDR: The post author is not at fault in this scenario. They are
+simply asking others to follow the clearly posted, city-mandated leash laws
+for everyone's safety — a reasonable and responsible action...
+```
+
+**Sexism**
+```
+Yes, this scenario is sexist. It places an unfair expectation on women based
+solely on their gender, disregarding their personal autonomy and choices...
+```
