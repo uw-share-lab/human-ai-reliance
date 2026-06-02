@@ -71,11 +71,17 @@ def merge_conversations(conversations_df, messages_df):
             latest_end = pair_conversations['end_time'].dropna()
             if not latest_end.empty:
                 merged_conv['end_time'] = latest_end.max()
-                
-                # Recalculate duration if both start and end are available
-                start_time = pd.to_datetime(merged_conv['start_time'])
-                end_time = pd.to_datetime(merged_conv['end_time'])
-                merged_conv['duration_ms'] = int((end_time - start_time).total_seconds() * 1000)
+
+            # Sum the durations of sessions that actually recorded an end time.
+            # The old span-based recalculation (earliest_start → latest_end) was
+            # wrong when one session was abandoned mid-way and the participant
+            # restarted: the gap between sessions inflated the merged duration far
+            # beyond 3 minutes even though each real session was ~3 min or less.
+            valid_durations = pair_conversations['duration_ms'].dropna()
+            if not valid_durations.empty:
+                merged_conv['duration_ms'] = int(valid_durations.sum())
+            else:
+                merged_conv['duration_ms'] = None
             
             # Sum interaction counts
             merged_conv['interaction_count'] = pair_conversations['interaction_count'].sum()
