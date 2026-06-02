@@ -236,18 +236,17 @@ const ChatInterface: React.FC = () => {
         sequenceNumber: nextSeqRef.current++,
       };
 
-      setChatState(prev => {
-        const newCount = prev.interactionCount + 1;
-        conversationService.updateInteractionCount(conversationId, newCount).catch(console.error);
-        return {
-          ...prev,
-          messages: [...prev.messages, aiMessage],
-          isLoading: false,
-          interactionCount: newCount,
-        };
-      });
+      const newCount = chatState.interactionCount + 1;
+
+      setChatState(prev => ({
+        ...prev,
+        messages: [...prev.messages, aiMessage],
+        isLoading: false,
+        interactionCount: newCount,
+      }));
 
       await conversationService.saveMessage(conversationId, aiMessage);
+      conversationService.updateInteractionCount(conversationId, newCount).catch(console.error);
 
     } catch (error) {
       console.error('Failed to send message:', error);
