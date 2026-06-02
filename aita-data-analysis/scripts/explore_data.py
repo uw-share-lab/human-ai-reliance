@@ -6,6 +6,8 @@ import os
 from pathlib import Path
 
 # Import configuration
+import sys
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
 from config import DATA_DIR, SUBMISSION_FILE, COMMENT_FILE
 
 def explore_data_distributions():

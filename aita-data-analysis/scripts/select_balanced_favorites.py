@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 from pathlib import Path
+import sys
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
 from config import (
     SAMPLES_DIR, FAVORITES_DIR, create_directories, export_to_txt, FAVORITES_TXT_FILE
 )

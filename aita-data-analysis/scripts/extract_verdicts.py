@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import re
 from pathlib import Path
+import sys
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
 from config import (
     DATA_DIR, SAMPLES_DIR, SUBMISSION_FILE, COMMENT_FILE, create_directories
 )

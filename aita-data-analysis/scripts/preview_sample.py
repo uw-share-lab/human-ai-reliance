@@ -1,4 +1,6 @@
 import pandas as pd
+import sys
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
 from config import SAMPLES_DIR, SUBMISSION_SAMPLE_FILE, COMMENT_SAMPLE_FILE
 
 def preview_sampled_data():

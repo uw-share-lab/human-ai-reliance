@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import argparse
 import random
+import sys
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
 from config import (
     DATA_DIR, SAMPLES_DIR, SUBMISSION_FILE, COMMENT_FILE,
     DEFAULT_MAX_SUBMISSION_CHARS, DEFAULT_MAX_COMMENT_CHARS,

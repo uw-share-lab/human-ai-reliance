@@ -1,5 +1,7 @@
 import pandas as pd
 import random
+import sys
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
 from config import (
     SAMPLES_DIR, FAVORITES_DIR, SUBMISSION_SAMPLE_FILE, COMMENT_SAMPLE_FILE,
     FAVORITE_SUBMISSIONS_FILE, FAVORITE_COMMENTS_FILE, ENGAGEMENT_TIERS,
