@@ -1,9 +1,7 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-
 const OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
 const MAX_RETRIES = 3;
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -13,7 +11,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ error: 'Server configuration error' });
   }
 
-  const { messages, scenarioType } = req.body;
+  const { messages, scenarioType } = req.body ?? {};
   if (!messages || !scenarioType) {
     return res.status(400).json({ error: 'Missing messages or scenarioType' });
   }
@@ -35,7 +33,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await sleep(Math.pow(2, attempt - 1) * 1000);
     }
 
-    let response: Response;
+    let response: any;
     try {
       response = await fetch(OPENAI_URL, {
         method: 'POST',
@@ -45,30 +43,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         },
         body: JSON.stringify(body),
       });
-    } catch {
+    } catch (_) {
       lastError = 'Network error contacting OpenAI';
       continue;
     }
 
     if (response.ok) {
-      const data = await response.json() as any;
+      const data = await response.json();
       const content = data.choices?.[0]?.message?.content ?? '';
       return res.status(200).json({ content });
     }
 
     lastStatus = response.status;
-    const errData = await response.json().catch(() => ({})) as any;
+    const errData = await response.json().catch(() => ({}));
     lastError = errData?.error?.message ?? `HTTP ${response.status}`;
 
-    // Only retry on rate limit or server errors
     if (response.status !== 429 && response.status < 500) break;
 
-    // Respect Retry-After header on 429
     if (response.status === 429) {
       const retryAfter = response.headers.get('Retry-After');
-      if (retryAfter) {
-        await sleep(parseInt(retryAfter) * 1000);
-      }
+      if (retryAfter) await sleep(parseInt(retryAfter) * 1000);
     }
   }
 
@@ -79,7 +73,7 @@ function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function buildSystemMessage(scenarioType: 'aita' | 'sexism') {
+function buildSystemMessage(scenarioType: string) {
   const base = `You are participating in a research study about moral reasoning and social judgments.
 
 IMPORTANT: You will engage with a participant to help them make a decision regarding ${scenarioType === 'sexism' ? 'sexism' : 'fault/responsibility'} of a reddit post. Note that the participant is NOT the person who experienced the scenario - they are a third-party observer evaluating the situation, similar to your role.
