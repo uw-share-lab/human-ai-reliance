@@ -1,7 +1,13 @@
 const OPENAI_URL = 'https://api.openai.com/v1/responses';
 const MAX_RETRIES = 3;
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
 
 module.exports = async function handler(req, res) {
+  const origin = req.headers.origin;
+  if (ALLOWED_ORIGIN && origin && origin !== ALLOWED_ORIGIN) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
