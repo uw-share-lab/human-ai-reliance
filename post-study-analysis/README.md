@@ -1,6 +1,6 @@
 # Post-Study Analysis
 
-Three-step post-processing pipeline for the **Human-AI Reliance** study ([SHARE Lab](https://uwshare-lab.ca), University of Waterloo). Takes the raw Supabase export from [chat-research-interface](https://github.com/LLM-Reliance-Project/chat-research-interface), de-dupes accidentally-restarted sessions, produces engagement metrics, and generates per-scenario YAML files for qualitative scoring.
+Post-processing pipeline for the **Human-AI Reliance** study ([SHARE Lab](https://uwshare-lab.ca), University of Waterloo). Takes the raw Supabase export from [chat-research-interface](https://github.com/LLM-Reliance-Project/chat-research-interface), de-dupes accidentally-restarted sessions, produces engagement metrics, generates per-scenario YAML files for qualitative scoring, and identifies non-engagers for sensitivity analyses.
 
 ```
 chat-research-interface (Supabase)
@@ -21,12 +21,13 @@ chat-research-interface (Supabase)
    │      CSV                    │
    └─────────────────────────────┘
         │
-        ▼
-   ┌─────────────────────────────┐
-   │ 3. generate_scoring_yaml.py │  splits scoring CSV into per-scenario YAML
-   │    → analysis/scoring/      │  files with block-scalar transcripts for
-   │      <scenario_id>.yaml     │  easy in-file scoring
-   └─────────────────────────────┘
+        ├──────────────────────────────────────────┐
+        ▼                                          ▼
+   ┌─────────────────────────────┐    ┌─────────────────────────────┐
+   │ 3. generate_scoring_yaml.py │    │ 4. engagement_thresholds.py │
+   │    → analysis/scoring/      │    │    → exclusion CSVs + plots │
+   │      <scenario_id>.yaml     │    │      for non-engager filter  │
+   └─────────────────────────────┘    └─────────────────────────────┘
 ```
 
 ## Directory layout
@@ -40,7 +41,8 @@ Post-Study-Analysis/
 ├── scripts/
 │   ├── fix_duplicates.py                       # Step 1: dedup raw exports → merged/
 │   ├── engagement_metrics.py                   # Step 2: metrics + transcripts → analysis/
-│   └── generate_scoring_yaml.py               # Step 3: per-scenario YAML → analysis/scoring/
+│   ├── generate_scoring_yaml.py                # Step 3: per-scenario YAML → analysis/scoring/
+│   └── engagement_thresholds.py               # Step 4: threshold analysis → analysis/
 │
 ├── data/                                       (gitignored contents)
 │   └── ai_conflicts_high.xlsx                  ← reference data
@@ -58,7 +60,12 @@ Post-Study-Analysis/
 ├── analysis/                                   (gitignored contents)
 │   ├── messages_clean.csv                      ← engagement_metrics.py output
 │   ├── conversation_engagement_metrics.csv     ← metrics, one row per conversation
-│   ├── conversation_transcripts_for_scoring.csv  ← intermediate; input to step 3
+│   ├── conversation_transcripts_for_scoring.csv  ← intermediate; input to steps 3 & 4
+│   ├── engagement_thresholds.txt               ← exclusion counts across all thresholds
+│   ├── hard_exclusions_test_participants.csv   ← test/pilot Prolific IDs to always drop
+│   ├── threshold_turns2_words20.csv            ← non-engager list: turns<2 AND words<20
+│   ├── threshold_turns2_words30.csv            ← non-engager list: turns<2 AND words<30
+│   ├── plots/                                  ← distribution figures (png)
 │   └── scoring/                               (gitignored — contains participant data)
 │       └── <scenario_id>.yaml                  ← generate_scoring_yaml.py output
 │
@@ -75,8 +82,13 @@ Post-Study-Analysis/
 | `merged/participants_merged.csv` | `fix_duplicates.py` | Pass-through, unchanged. |
 | `analysis/messages_clean.csv` | `engagement_metrics.py` | Cleaned messages joined with conversation metadata; word counts attached. |
 | `analysis/conversation_engagement_metrics.csv` | `engagement_metrics.py` | One row per conversation — quantitative metrics, ready to merge into the main study dataset. |
-| `analysis/conversation_transcripts_for_scoring.csv` | `engagement_metrics.py` | Same rows + full formatted transcript; intermediate input for step 3. |
+| `analysis/conversation_transcripts_for_scoring.csv` | `engagement_metrics.py` | Same rows + full formatted transcript; intermediate input for steps 3 & 4. |
 | `analysis/scoring/<scenario_id>.yaml` | `generate_scoring_yaml.py` | One YAML file per scenario (~30–33 conversations each). Scorers fill `qualitative_score` and `notes` in-place. |
+| `analysis/engagement_thresholds.txt` | `engagement_thresholds.py` | Exclusion counts at every turns/words/combined threshold. Reference when deciding the non-engager cutoff. |
+| `analysis/hard_exclusions_test_participants.csv` | `engagement_thresholds.py` | Pilot/test Prolific IDs (`123456789101112`, `methodologies`) — exclude from all analyses unconditionally. |
+| `analysis/threshold_turns2_words20.csv` | `engagement_thresholds.py` | Non-engager list A: turns < 2 AND total words < 20 (24 conversation-scenario pairs). |
+| `analysis/threshold_turns2_words30.csv` | `engagement_thresholds.py` | Non-engager list B: turns < 2 AND total words < 30 (39 conversation-scenario pairs). |
+| `analysis/plots/` | `engagement_thresholds.py` | Distribution histograms, CDFs, exclusion curves, and turns-vs-words scatter. |
 
 ### Metrics produced
 
@@ -132,7 +144,19 @@ source .venv/bin/activate
 python scripts/fix_duplicates.py          # step 1: dedup → merged/
 python scripts/engagement_metrics.py      # step 2: metrics + transcripts → analysis/
 python scripts/generate_scoring_yaml.py   # step 3: per-scenario YAML → analysis/scoring/
+python scripts/engagement_thresholds.py   # step 4: threshold analysis + exclusion lists → analysis/
 ```
+
+## Non-engager filtering
+
+`engagement_thresholds.py` produces two exclusion lists (prolific_id + scenario_id pairs) for sensitivity analyses:
+
+| File | Criterion | Excluded |
+|---|---|---|
+| `threshold_turns2_words20.csv` | turns < 2 AND total words < 20 | 24 (9.4%) |
+| `threshold_turns2_words30.csv` | turns < 2 AND total words < 30 | 39 (15.4%) |
+
+**Hard exclusions** (`hard_exclusions_test_participants.csv`): pilot/test IDs that should be dropped from all analyses unconditionally, regardless of threshold — these have non-Prolific identifiers and were not real participants.
 
 ## Qualitative scoring
 
