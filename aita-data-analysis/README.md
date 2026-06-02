@@ -1,6 +1,6 @@
 # AITA Data Analysis
 
-Sampling and selection pipeline for Reddit r/AmItheAsshole (AITA) posts, used to build the moral-reasoning scenario set for the **Human-AI Reliance** study (Ferguson lab, University of Waterloo).
+Sampling and selection pipeline for Reddit r/AmItheAsshole (AITA) posts, used to build the moral-reasoning scenario set for the **Human-AI Reliance** study ([SHARE Lab](https://uwshare-lab.ca), University of Waterloo).
 
 This repo is the first stage of the study pipeline:
 
@@ -21,21 +21,20 @@ AITA-Data-Analysis/
 ├── config/
 │   └── sampling_config.yaml         # All sampling parameters
 ├── config.py                        # Path constants shared by every script
-├── setup.py                         # One-shot dir/venv/deps bootstrap
 ├── requirements.txt
 │
-├── explore_data.py                  # Inspect distributions before sampling
-├── sample_data.py                   # Engagement-stratified sample
-├── stratified_aita_sample.py        # Verdict-stratified submission sample
-├── extract_verdicts.py              # Regex-extract YTA/NTA/ESH/NAH; balanced comment sample
-├── run_balanced_workflow.py         # Wraps extract_verdicts + selection
-│
-├── preview_sample.py                # Print a readable summary of a generated sample
-├── simple_select.py                 # Interactive y/n select from engagement sample
-├── select_balanced_favorites.py     # Interactive select from verdict-balanced comments
-├── select_stratified_favorites.py   # Interactive select from stratified submissions
-│
-├── reading_data.ipynb               # SQLite → CSV export notebook
+├── scripts/
+│   ├── reading_data.ipynb           # SQLite → CSV export notebook
+│   ├── explore_data.py              # Inspect distributions before sampling
+│   ├── sample_data.py               # Engagement-stratified sample
+│   ├── stratified_aita_sample.py    # Verdict-stratified submission sample
+│   ├── extract_verdicts.py          # Regex-extract YTA/NTA/ESH/NAH; balanced comment sample
+│   ├── run_balanced_workflow.py     # Wraps extract_verdicts + selection
+│   ├── preview_sample.py            # Print a readable summary of a generated sample
+│   ├── simple_select.py             # Interactive y/n select from engagement sample
+│   ├── select_balanced_favorites.py # Interactive select from verdict-balanced comments
+│   ├── select_stratified_favorites.py # Interactive select from stratified submissions
+│   └── setup.py                     # One-shot dir/venv/deps bootstrap
 │
 ├── data/        (gitignored)        # Raw inputs: submission.csv, comment.csv, AmItheAsshole.sqlite
 ├── samples/     (gitignored)        # Generated samples
@@ -62,7 +61,7 @@ pip install -r requirements.txt
 Or use the bundled bootstrap:
 
 ```bash
-python setup.py
+python scripts/setup.py
 ```
 
 ## Workflows
@@ -72,10 +71,10 @@ The repo supports three sampling strategies, picked by what you want to balance 
 ### A — Engagement-based (samples by post popularity)
 
 ```bash
-python explore_data.py                # inspect distributions
-python sample_data.py                 # generate sample
-python preview_sample.py              # eyeball it
-python simple_select.py               # interactive y/n picker
+python scripts/explore_data.py                # inspect distributions
+python scripts/sample_data.py                 # generate sample
+python scripts/preview_sample.py              # eyeball it
+python scripts/simple_select.py               # interactive y/n picker
 ```
 
 Output: `favorites/engagement/engagement_favorite_{submissions,comments}.csv`
@@ -85,10 +84,10 @@ Output: `favorites/engagement/engagement_favorite_{submissions,comments}.csv`
 The AITA corpus is naturally imbalanced (~63% NTA, ~31% YTA, ~4% ESH, ~2% NAH). This workflow balances across verdict categories.
 
 ```bash
-python run_balanced_workflow.py --interactive
+python scripts/run_balanced_workflow.py --interactive
 # or piece-wise:
-python extract_verdicts.py --sample-size 100000 --samples-per-category 10
-python select_balanced_favorites.py
+python scripts/extract_verdicts.py --sample-size 100000 --samples-per-category 10
+python scripts/select_balanced_favorites.py
 ```
 
 Output: `favorites/balanced/balanced_favorite_{comments,submissions}.csv`
@@ -98,8 +97,8 @@ Output: `favorites/balanced/balanced_favorite_{comments,submissions}.csv`
 This is what the study used: pick whole AITA submissions (not individual comments), stratified by the verdict the community converged on.
 
 ```bash
-python stratified_aita_sample.py
-python select_stratified_favorites.py
+python scripts/stratified_aita_sample.py
+python scripts/select_stratified_favorites.py
 ```
 
 Output: `favorites/stratified/stratified_favorite_{submissions,comments}.csv`
@@ -109,7 +108,7 @@ Output: `favorites/stratified/stratified_favorite_{submissions,comments}.csv`
 Every script reads defaults from `config/sampling_config.yaml` and accepts CLI overrides. Common knobs:
 
 ```bash
-python sample_data.py \
+python scripts/sample_data.py \
   --max-submission-chars 1000 \
   --max-comment-chars 300 \
   --target-n 30 \
