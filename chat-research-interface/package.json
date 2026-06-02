@@ -2,6 +2,9 @@
   "name": "chat-research-interface",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.52.0",
     "@types/node": "^24.0.15",
