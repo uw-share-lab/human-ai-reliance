@@ -283,6 +283,7 @@ src/
 - [`FILE_STRUCTURE.md`](./FILE_STRUCTURE.md) — repo layout
 - [`.env.example`](./.env.example) — environment variable template
 - [`supabase-setup.sql`](./supabase-setup.sql) — DB schema + RLS policies
+- [`rls-fix.sql`](./rls-fix.sql) — supplemental RLS fix for anonymous upsert operations
 
 ## Support
 
