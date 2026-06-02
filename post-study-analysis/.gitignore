@@ -6,6 +6,9 @@
 *.dump
 *.backup
 
+# Generated scoring files contain participant data (Prolific IDs + transcripts)
+analysis/scoring/
+
 # Python
 __pycache__/
 *.py[cod]

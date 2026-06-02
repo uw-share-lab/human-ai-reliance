@@ -1,6 +1,6 @@
 # Post-Study Analysis
 
-Two-step post-processing pipeline for the **Human-AI Reliance** study ([SHARE Lab](https://uwshare-lab.ca), University of Waterloo). Takes the raw Supabase export from [chat-research-interface](https://github.com/LLM-Reliance-Project/chat-research-interface), de-dupes accidentally-restarted sessions, and produces engagement metrics + formatted transcripts ready for qualitative scoring.
+Three-step post-processing pipeline for the **Human-AI Reliance** study ([SHARE Lab](https://uwshare-lab.ca), University of Waterloo). Takes the raw Supabase export from [chat-research-interface](https://github.com/LLM-Reliance-Project/chat-research-interface), de-dupes accidentally-restarted sessions, produces engagement metrics, and generates per-scenario YAML files for qualitative scoring.
 
 ```
 chat-research-interface (Supabase)
@@ -18,7 +18,14 @@ chat-research-interface (Supabase)
    ┌─────────────────────────────┐
    │ 2. engagement_metrics.py    │  computes turns/words/duration; builds
    │    → metrics CSV + scoring  │  transcripts for human qualitative scoring
-   │      spreadsheet            │
+   │      CSV                    │
+   └─────────────────────────────┘
+        │
+        ▼
+   ┌─────────────────────────────┐
+   │ 3. generate_scoring_yaml.py │  splits scoring CSV into per-scenario YAML
+   │    → analysis/scoring/      │  files with block-scalar transcripts for
+   │      <scenario_id>.yaml     │  easy in-file scoring
    └─────────────────────────────┘
 ```
 
@@ -32,7 +39,8 @@ Post-Study-Analysis/
 │
 ├── scripts/
 │   ├── fix_duplicates.py                       # Step 1: dedup raw exports → merged/
-│   └── engagement_metrics.py                   # Step 2: metrics + transcripts → analysis/
+│   ├── engagement_metrics.py                   # Step 2: metrics + transcripts → analysis/
+│   └── generate_scoring_yaml.py               # Step 3: per-scenario YAML → analysis/scoring/
 │
 ├── data/                                       (gitignored contents)
 │   └── ai_conflicts_high.xlsx                  ← reference data
@@ -50,7 +58,9 @@ Post-Study-Analysis/
 ├── analysis/                                   (gitignored contents)
 │   ├── messages_clean.csv                      ← engagement_metrics.py output
 │   ├── conversation_engagement_metrics.csv     ← metrics, one row per conversation
-│   └── conversation_transcripts_for_scoring.csv  ← fill score + notes by hand
+│   ├── conversation_transcripts_for_scoring.csv  ← intermediate; input to step 3
+│   └── scoring/                               (gitignored — contains participant data)
+│       └── <scenario_id>.yaml                  ← generate_scoring_yaml.py output
 │
 └── backups/                                    (gitignored contents)
     └── db_cluster-*.backup.gz                  ← pg_dump archive, NOT used by any script
@@ -60,12 +70,13 @@ Post-Study-Analysis/
 
 | File | Produced by | Description |
 |---|---|---|
-| `merged/conversations_merged.csv` | `fix_duplicates.py` | Conversations with duplicate `(prolific_id, scenario_id)` rows collapsed (earliest start, latest end, summed interactions). |
+| `merged/conversations_merged.csv` | `fix_duplicates.py` | Conversations with duplicate `(prolific_id, scenario_id)` rows collapsed (earliest start, latest end, summed durations). |
 | `merged/messages_merged.csv` | `fix_duplicates.py` | All messages reassigned to the surviving conversation; per-conversation AI messages concatenated into one. |
 | `merged/participants_merged.csv` | `fix_duplicates.py` | Pass-through, unchanged. |
 | `analysis/messages_clean.csv` | `engagement_metrics.py` | Cleaned messages joined with conversation metadata; word counts attached. |
 | `analysis/conversation_engagement_metrics.csv` | `engagement_metrics.py` | One row per conversation — quantitative metrics, ready to merge into the main study dataset. |
-| `analysis/conversation_transcripts_for_scoring.csv` | `engagement_metrics.py` | Same rows + full formatted transcript; fill `qualitative_score` (1–5) and `notes` columns by hand. |
+| `analysis/conversation_transcripts_for_scoring.csv` | `engagement_metrics.py` | Same rows + full formatted transcript; intermediate input for step 3. |
+| `analysis/scoring/<scenario_id>.yaml` | `generate_scoring_yaml.py` | One YAML file per scenario (~30–33 conversations each). Scorers fill `qualitative_score` and `notes` in-place. |
 
 ### Metrics produced
 
@@ -78,7 +89,7 @@ Post-Study-Analysis/
 
 ## Data access
 
-**No participant data is in this repo.** Every `*.csv`, `*.xlsx`, `*.gz`, and `*.backup` is gitignored — the rows contain Prolific IDs, IP addresses, user agents, and full transcripts. Request the Supabase export from the study authors.
+**No participant data is in this repo.** Every `*.csv`, `*.xlsx`, `*.gz`, `*.backup`, and `analysis/scoring/` is gitignored — the rows contain Prolific IDs, IP addresses, user agents, and full transcripts. Request the Supabase export from the study authors.
 
 The Supabase DDL is in [`schema.sql`](./schema.sql) for context only (not meant to be executed).
 
@@ -93,7 +104,7 @@ If you only have the `.gz`, you'll need to restore it into a local Postgres and 
 
 ## Setup
 
-Requires Python 3.10+. Dependencies: `pandas`, `numpy`.
+Requires Python 3.10+. Dependencies: `pandas`, `numpy`, `pyyaml`.
 
 ```bash
 python -m venv .venv
@@ -120,11 +131,33 @@ source .venv/bin/activate
 
 python scripts/fix_duplicates.py          # step 1: dedup → merged/
 python scripts/engagement_metrics.py      # step 2: metrics + transcripts → analysis/
+python scripts/generate_scoring_yaml.py   # step 3: per-scenario YAML → analysis/scoring/
 ```
 
 ## Qualitative scoring
 
-Open `analysis/conversation_transcripts_for_scoring.csv` in Excel or Google Sheets and fill the `qualitative_score` column using:
+Step 3 produces one YAML file per scenario in `analysis/scoring/`. Each conversation entry looks like:
+
+```yaml
+- conversation_id: cc65dadc-...
+  prolific_id: 546ec14d...
+  scenario_id: sexism-2
+  study_type: sexism
+  duration_seconds: 189.6
+  num_user_turns: 3
+  total_user_words: 46
+  avg_user_words_per_turn: 15.3
+  transcript: |
+    [AI]: Hi, my opinion on this scenario is that...
+
+    [USER]: ...
+
+    [AI]: ...
+  qualitative_score: null
+  notes: null
+```
+
+Open the relevant scenario file in any text editor, read the transcript, and fill in `qualitative_score` and `notes`. Use the rubric below:
 
 | Score | Label | Description |
 |-------|-------|-------------|
@@ -135,3 +168,14 @@ Open `analysis/conversation_transcripts_for_scoring.csv` in Excel or Google Shee
 | 5 | Very deep | Rich dialogue, user reflects and builds on the conversation |
 
 Use `notes` for anything that doesn't fit the rubric (e.g. off-topic, tech issue).
+
+To read completed scores back into Python:
+
+```python
+import yaml
+
+with open("analysis/scoring/aita-1.yaml") as f:
+    records = yaml.safe_load(f)
+
+scored = [r for r in records if r["qualitative_score"] is not None]
+```
