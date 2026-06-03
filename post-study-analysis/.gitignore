@@ -11,6 +11,9 @@ analysis/scoring/
 analysis/scoring_words20/
 analysis/scoring_words30/
 
+# Notebook outputs (generated, not source)
+outputs_updated_directionalR_revisionFF/
+
 # Python
 __pycache__/
 *.py[cod]
