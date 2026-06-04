@@ -18,6 +18,11 @@ Post-Study-Analysis/
 │   └── engagement_thresholds.py   # Step 4: exclusion lists + distribution plots
 │
 ├── data/                          (gitignored — participant data)
+│   ├── comprehensive_theme_file2.csv                            ← Qualtrics + theme cosine scores
+│   ├── comprehensive_language_file2.csv                         ← Qualtrics + LIWC cosine scores
+│   ├── comprehensive_detail_lengths2.csv                        ← Qualtrics + word/char counts
+│   ├── comprehensive_stance_file.csv                            ← Qualtrics + stance classifications
+│   ├── unified_theme_analysis_results_3.xlsx                    ← combined theme + perceived reliance
 │   ├── H-AI_Subjectivity_Study_High_Interaction_filtered.csv   ← Qualtrics export, high cond.
 │   ├── H-AI_Subjectivity_Study_Low_Interaction_filtered.csv    ← Qualtrics export, low cond.
 │   ├── H-AI_Subjectivity_Study_Baseline_filtered.csv           ← Qualtrics export, baseline
@@ -61,11 +66,11 @@ Post-Study-Analysis/
 
 | File | Path | Source |
 |---|---|---|
-| `comprehensive_theme_file2.csv` | repo root | Qualtrics + theme cosine scores |
-| `comprehensive_language_file2.csv` | repo root | Qualtrics + LIWC cosine scores |
-| `comprehensive_detail_lengths2.csv` | repo root | Qualtrics + word/char counts |
-| `comprehensive_stance_file.csv` | repo root | Qualtrics + stance classifications |
-| `unified_theme_analysis_results_3.xlsx` | repo root | Combined theme + perceived reliance (**needed for perceived reliance cells 25–31**) |
+| `comprehensive_theme_file2.csv` | `data/` | Qualtrics + theme cosine scores |
+| `comprehensive_language_file2.csv` | `data/` | Qualtrics + LIWC cosine scores |
+| `comprehensive_detail_lengths2.csv` | `data/` | Qualtrics + word/char counts |
+| `comprehensive_stance_file.csv` | `data/` | Qualtrics + stance classifications |
+| `unified_theme_analysis_results_3.xlsx` | `data/` | Combined theme + perceived reliance (**needed for perceived reliance cells 25–31**) |
 | `H-AI_Subjectivity_Study_*_filtered.csv` | `data/` | Raw Qualtrics exports (all 3 conditions) |
 
 ### Cell structure
