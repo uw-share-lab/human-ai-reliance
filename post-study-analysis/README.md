@@ -159,9 +159,17 @@ All output CSVs land in `outputs_updated_directionalR_revisionFF/` (gitignored).
 
 | File | Contents |
 |---|---|
+| `all_mod.csv` | Combined outcomes (R, FF) before engagement filter |
 | `all_mod_filtered.csv` | Combined outcomes (R, FF) after engagement filter applied |
-| `primary_directionalR_Holm.csv` | Primary family: R low vs. high, Holm-corrected |
-| `secondary_FF_omnibus_Holm.csv` | Secondary family: FF omnibus across all conditions |
-| `posthoc_FF_pairwise.csv` | Post-hoc FF pairwise contrasts + bootstrap CIs |
-| `sensitivity_directionalR_MWU.csv` | Sensitivity: MWU R low vs. high |
-| `master_sensitivity_checks.csv` | Master sensitivity table (R, RA, FA, FF) |
+| `primary_directionalR_results.csv` | Primary family: R low vs. high, Holm-corrected (Cell 4) |
+| `rowlevel_alt_reliance_finalAI_minus_firstFinal.csv` | Alternative reliance row-level data (Cell X) |
+| `secondary_revisionFF_omnibus.csv` | Secondary family: FF omnibus across all conditions, Holm-corrected (Cell 5) |
+| `secondary_revisionFF_posthoc_pairwise.csv` | Post-hoc FF pairwise contrasts + bootstrap CIs (Cell 6) |
+| `SENS_A_directionalR_MWU.csv` | Sensitivity A: non-parametric R low vs. high (MWU) |
+| `SENS_B_relativeAlignment_RA_MWU.csv` | Sensitivity B: relative alignment (RA) MWU |
+| `SENS_C_finalAI_FA_MWU.csv` | Sensitivity C: final-AI alignment (FA) MWU |
+| `SENS_D1_revisionFF_KW_omnibus.csv` | Sensitivity D1: FF Kruskal-Wallis omnibus |
+| `SENS_D2_revisionFF_pairwise_MWU.csv` | Sensitivity D2: FF pairwise MWU contrasts |
+| `perceived_by_condition_means.csv` | Perceived reliance means by condition (low/high) |
+| `perceived_by_condition_models.csv` | Perceived reliance MLM: condition effect |
+| `perceived_by_observedR_models.csv` | Perceived reliance MLM: observed R as predictor |
