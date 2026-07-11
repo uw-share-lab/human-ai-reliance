@@ -1,0 +1,44 @@
+# Participant data + DB dumps — never commit
+*.csv
+*.xlsx
+*.xls
+*.gz
+*.dump
+*.backup
+
+# Generated scoring files contain participant data (Prolific IDs + transcripts)
+analysis/scoring/
+analysis/scoring_words20/
+analysis/scoring_words30/
+
+# Notebook outputs (generated, not source)
+outputs_updated_directionalR_revisionFF/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+ENV/
+env/
+*.egg-info/
+
+# Env / secrets
+.env
+.env.local
+
+# Tooling state
+.claude/
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+*.swp
+
+# participant data — never commit (public repo)
+analysis/engagement_depth_rubric.docx
+analysis/engagement_depth_table.docx
+analysis/engagement_rubric_v0.md

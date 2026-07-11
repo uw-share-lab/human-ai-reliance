@@ -1,0 +1,6 @@
+# Place Supabase exports here:
+#   conversations_rows.csv
+#   messages_rows.csv
+#   participants_rows.csv
+# (Any *.gz pg_dump archives go here too.)
+# All *.csv / *.gz are gitignored — see ../.gitignore

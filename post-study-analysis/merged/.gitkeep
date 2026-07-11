@@ -1,0 +1,5 @@
+# Output of fix_duplicates.py:
+#   conversations_merged.csv
+#   messages_merged.csv
+#   participants_merged.csv
+# All *.csv are gitignored — see ../.gitignore
