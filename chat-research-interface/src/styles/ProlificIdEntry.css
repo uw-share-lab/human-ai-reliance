@@ -1,0 +1,211 @@
+.prolific-entry-container {
+  min-height: 100vh;
+  background: #f5f7fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.prolific-entry-card {
+  background: white;
+  max-width: 600px;
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.prolific-entry-card .header {
+  background: #34495e;
+  color: white;
+  padding: 30px;
+  text-align: center;
+}
+
+.prolific-entry-card .study-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.prolific-entry-card .study-subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.entry-form {
+  padding: 40px 30px;
+}
+
+.entry-form h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.instruction-text {
+  color: #5a6c7d;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.input-group {
+  margin-bottom: 25px;
+}
+
+.input-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.id-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 2px solid #e0e6ed;
+  border-radius: 8px;
+  transition: border-color 0.3s;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.5px;
+}
+
+.id-input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.id-input.error {
+  border-color: #e74c3c;
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+.id-input:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.error-message::before {
+  content: "⚠️";
+  font-size: 14px;
+}
+
+.continue-button {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background: #27ae60;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-bottom: 30px;
+}
+
+.continue-button:hover:not(:disabled) {
+  background: #219a52;
+}
+
+.continue-button:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.help-info {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.help-info h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 12px;
+}
+
+.help-info ul {
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.help-info li {
+  color: #5a6c7d;
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+.privacy-note {
+  background: #e8f5e8;
+  padding: 15px;
+  border-radius: 6px;
+  border-left: 4px solid #27ae60;
+  font-size: 14px;
+  color: #27ae60;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .prolific-entry-container {
+    padding: 10px;
+  }
+
+  .prolific-entry-card .header {
+    padding: 20px;
+  }
+
+  .prolific-entry-card .study-title {
+    font-size: 22px;
+  }
+
+  .entry-form {
+    padding: 30px 20px;
+  }
+
+  .entry-form h2 {
+    font-size: 20px;
+  }
+
+  .help-info {
+    padding: 20px;
+  }
+}
+
+/* Animation for smooth entry */
+.prolific-entry-card {
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
