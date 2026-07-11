@@ -24,19 +24,28 @@ post-study-analysis/data/
 !post-study-analysis/raw/.gitkeep
 !post-study-analysis/merged/.gitkeep
 !post-study-analysis/backups/.gitkeep
-post-study-analysis/analysis/*.xlsx
-post-study-analysis/analysis/engagement_depth_rubric.docx
-post-study-analysis/analysis/engagement_depth_table.docx
-post-study-analysis/analysis/engagement_rubric_v0.md
-post-study-analysis/analysis/*transcript*
-post-study-analysis/analysis/messages_clean.csv
-post-study-analysis/analysis/prolific_to_response_mapping.csv
-post-study-analysis/analysis/hard_exclusions_test_participants.csv
-post-study-analysis/analysis/double_coding_answer_key.csv
-post-study-analysis/analysis/engagement_depth_coded.csv
-post-study-analysis/analysis/conversation_engagement_metrics.csv
-post-study-analysis/analysis/scoring*
-post-study-analysis/analysis/exclude_words*.csv
-post-study-analysis/analysis/threshold_*.csv
+# coding/ — rubrics, coding sheets, answer keys, double-coding output (participant-derived)
+post-study-analysis/coding/*.xlsx
+post-study-analysis/coding/engagement_depth_rubric.docx
+post-study-analysis/coding/engagement_depth_table.docx
+post-study-analysis/coding/engagement_rubric_v0.md
+post-study-analysis/coding/double_coding_answer_key.csv
+post-study-analysis/coding/engagement_depth_coded.csv
+
+# data-derived/ — derived CSVs + scoring yaml, all trace back to participant data
+post-study-analysis/data-derived/*transcript*
+post-study-analysis/data-derived/messages_clean.csv
+post-study-analysis/data-derived/prolific_to_response_mapping.csv
+post-study-analysis/data-derived/hard_exclusions_test_participants.csv
+post-study-analysis/data-derived/conversation_engagement_metrics.csv
+post-study-analysis/data-derived/scoring*
+post-study-analysis/data-derived/exclude_words*.csv
+post-study-analysis/data-derived/threshold_*.csv
+
+# outputs/ — model outputs derived from participant data (dir renamed from
+# outputs_engagement_predictors/ + outputs_updated_directionalR_revisionFF/;
+# previously only covered by the nested post-study-analysis/.gitignore — added
+# here too for defense-in-depth)
+post-study-analysis/outputs/
 aita-data-analysis/data/
 generating-explanations/data/

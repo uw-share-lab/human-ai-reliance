@@ -6,14 +6,15 @@ Statistical analysis pipeline for the **Human-AI Reliance** study ([SHARE Lab](h
 
 ```
 Post-Study-Analysis/
-├── HAI_analysis_directionalR_revisionFF_MLM_bootstrap.ipynb   ← main analysis notebook
+├── notebooks/
+│   └── HAI_analysis_directionalR_revisionFF_MLM_bootstrap.ipynb   ← main analysis notebook
 ├── schema.sql                                                  ← Supabase DDL (context only)
 ├── requirements.txt
 ├── README.md
 │
 ├── scripts/
 │   ├── fix_duplicates.py          # Step 1: dedup raw Supabase exports → merged/
-│   ├── engagement_metrics.py      # Step 2: compute turns/words/duration → analysis/
+│   ├── engagement_metrics.py      # Step 2: compute turns/words/duration → data-derived/
 │   ├── generate_scoring_yaml.py   # Step 3: per-scenario YAML for qualitative scoring
 │   └── engagement_thresholds.py   # Step 4: exclusion lists + distribution plots
 │
@@ -38,11 +39,21 @@ Post-Study-Analysis/
 │   ├── messages_merged.csv
 │   └── participants_merged.csv
 │
-├── analysis/                      (gitignored — engagement_metrics.py + threshold outputs)
+├── coding/                        (gitignored except engagement_rubric_literature.md — rubrics, coding sheets, double-coding output)
+│   ├── engagement_rubric_literature.md        ← tracked
+│   ├── engagement_rubric_v0.md
+│   ├── engagement_depth_rubric.docx
+│   ├── engagement_depth_table.docx
+│   ├── full_coding_sheet.xlsx
+│   ├── double_coding_sheet.xlsx
+│   ├── double_coding_answer_key.csv
+│   └── engagement_depth_coded.csv
+│
+├── data-derived/                  (gitignored except engagement_thresholds.txt — engagement_metrics.py + threshold outputs)
 │   ├── messages_clean.csv
 │   ├── conversation_engagement_metrics.csv
 │   ├── conversation_transcripts_for_scoring.csv
-│   ├── engagement_thresholds.txt
+│   ├── engagement_thresholds.txt               ← tracked
 │   ├── hard_exclusions_test_participants.csv
 │   ├── threshold_turns2_words20.csv
 │   ├── threshold_turns2_words30.csv
@@ -53,7 +64,14 @@ Post-Study-Analysis/
 │   ├── scoring_words20/                       (gitignored — non-engagers removed)
 │   └── scoring_words30/
 │
-├── outputs_updated_directionalR_revisionFF/   (gitignored — notebook output CSVs)
+├── plots/                         ← engagement_thresholds.py distribution figures (tracked)
+│   ├── engagement_distributions.png
+│   ├── exclusion_curves.png
+│   └── turns_vs_words_scatter.png
+│
+├── outputs/                       (gitignored — model/notebook output CSVs)
+│   ├── engagement-predictors/     ← engagement_predictor_models.py output
+│   └── directionalR-revisionFF/   ← main notebook output
 │
 └── backups/                       (gitignored — pg_dump archive)
 ```
@@ -93,8 +111,8 @@ Post-Study-Analysis/
 
 Approved exclusion criterion (Sharon, 2026-06-03): **turns < 2 AND total words < 20** in the high-interactivity chat condition.
 
-- **Source list**: `analysis/exclude_words20.csv` — 28 `(prolific_id, scenario_id)` pairs
-- **ID mapping**: `analysis/prolific_to_response_mapping.csv` — maps high-condition Prolific IDs to Qualtrics `ResponseId` (built from `Q84` column in the high-interaction Qualtrics export)
+- **Source list**: `data-derived/exclude_words20.csv` — 28 `(prolific_id, scenario_id)` pairs
+- **ID mapping**: `data-derived/prolific_to_response_mapping.csv` — maps high-condition Prolific IDs to Qualtrics `ResponseId` (built from `Q84` column in the high-interaction Qualtrics export)
 - **Result**: 21 `(response_id, scenario)` pairs removed; 7 pairs had no survey response and were already absent from the input CSVs
 
 To regenerate the mapping from the Qualtrics export:
@@ -104,7 +122,7 @@ import pandas as pd
 df = pd.read_csv("data/H-AI_Subjectivity_Study_High_Interaction_filtered.csv")
 mapping = df[["ResponseId","Q84"]].rename(columns={"ResponseId":"response_id","Q84":"prolific_id"})
 mapping = mapping[mapping["prolific_id"].str.len() == 24].drop_duplicates("prolific_id")
-mapping.to_csv("analysis/prolific_to_response_mapping.csv", index=False)
+mapping.to_csv("data-derived/prolific_to_response_mapping.csv", index=False)
 ```
 
 ## Engagement pipeline
@@ -114,11 +132,11 @@ Separate from the main notebook — processes raw Supabase exports to compute pe
 ```
 raw/*.csv  →  fix_duplicates.py  →  merged/*.csv
                                         ↓
-                              engagement_metrics.py  →  analysis/
+                              engagement_metrics.py  →  data-derived/
                                         ↓
-                         generate_scoring_yaml.py  →  analysis/scoring*/
+                         generate_scoring_yaml.py  →  data-derived/scoring*/
                                         ↓
-                         engagement_thresholds.py  →  analysis/exclude_words*.csv
+                         engagement_thresholds.py  →  data-derived/exclude_words*.csv
 ```
 
 Run from the repo root (with `.venv` activated):
@@ -136,8 +154,8 @@ python scripts/engagement_thresholds.py
 
 | File | Criterion | Pairs excluded |
 |---|---|---|
-| `analysis/exclude_words20.csv` | turns < 2 AND words < 20, plus test participants | 28 |
-| `analysis/exclude_words30.csv` | turns < 2 AND words < 30, plus test participants | 43 |
+| `data-derived/exclude_words20.csv` | turns < 2 AND words < 20, plus test participants | 28 |
+| `data-derived/exclude_words30.csv` | turns < 2 AND words < 30, plus test participants | 43 |
 
 ## Setup
 
@@ -151,7 +169,7 @@ pip install -r requirements.txt
 
 ## Data access
 
-**No participant data is committed to this repo.** All `*.csv`, `*.xlsx`, `*.gz`, `*.backup`, and `analysis/scoring*/` are gitignored — they contain Prolific IDs, IP addresses, and full transcripts. Request the Supabase export and Qualtrics exports from the study authors.
+**No participant data is committed to this repo.** All `*.csv`, `*.xlsx`, `*.gz`, `*.backup`, and `data-derived/scoring*/` are gitignored — they contain Prolific IDs, IP addresses, and full transcripts. Request the Supabase export and Qualtrics exports from the study authors.
 
 ### Two raw-input formats
 
@@ -160,7 +178,7 @@ pip install -r requirements.txt
 
 ## Notebook outputs
 
-All output CSVs land in `outputs_updated_directionalR_revisionFF/` (gitignored). Key files:
+All output CSVs land in `outputs/directionalR-revisionFF/` (gitignored). Key files:
 
 | File | Contents |
 |---|---|

@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 MERGED_DIR = "merged"
-ANALYSIS_DIR = "analysis"
+ANALYSIS_DIR = "data-derived"
 
 MESSAGES_PATH = os.path.join(MERGED_DIR, "messages_merged.csv")
 CONVERSATIONS_PATH = os.path.join(MERGED_DIR, "conversations_merged.csv")

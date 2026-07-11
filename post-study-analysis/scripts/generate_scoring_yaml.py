@@ -3,25 +3,25 @@
 Generate per-scenario YAML files for qualitative scoring.
 
 Produces three sets of files:
-  analysis/scoring/              — all conversations (unfiltered)
-  analysis/scoring_words20/      — non-engagers removed (turns<2 AND words<20 + hard exclusions)
-  analysis/scoring_words30/      — non-engagers removed (turns<2 AND words<30 + hard exclusions)
+  data-derived/scoring/              — all conversations (unfiltered)
+  data-derived/scoring_words20/      — non-engagers removed (turns<2 AND words<20 + hard exclusions)
+  data-derived/scoring_words30/      — non-engagers removed (turns<2 AND words<30 + hard exclusions)
 
 Scorers fill in `qualitative_score` and `notes` directly in the file.
 To read completed scores back into Python:
 
     import yaml
-    with open("analysis/scoring/aita-1.yaml") as f:
+    with open("data-derived/scoring/aita-1.yaml") as f:
         records = yaml.safe_load(f)
 """
 
 import os
 import pandas as pd
 
-TRANSCRIPTS_PATH  = os.path.join("analysis", "conversation_transcripts_for_scoring.csv")
-HARD_EXCL_PATH    = os.path.join("analysis", "hard_exclusions_test_participants.csv")
-EXCL_WORDS20_PATH = os.path.join("analysis", "threshold_turns2_words20.csv")
-EXCL_WORDS30_PATH = os.path.join("analysis", "threshold_turns2_words30.csv")
+TRANSCRIPTS_PATH  = os.path.join("data-derived", "conversation_transcripts_for_scoring.csv")
+HARD_EXCL_PATH    = os.path.join("data-derived", "hard_exclusions_test_participants.csv")
+EXCL_WORDS20_PATH = os.path.join("data-derived", "threshold_turns2_words20.csv")
+EXCL_WORDS30_PATH = os.path.join("data-derived", "threshold_turns2_words30.csv")
 
 
 def _scalar(value):
@@ -98,9 +98,9 @@ def main():
         return df[mask]
 
     sets = [
-        (df,                          os.path.join("analysis", "scoring"),          "all conversations (unfiltered)"),
-        (apply_excl(df, excl_words20), os.path.join("analysis", "scoring_words20"), "filtered: turns<2 AND words<20 + hard exclusions"),
-        (apply_excl(df, excl_words30), os.path.join("analysis", "scoring_words30"), "filtered: turns<2 AND words<30 + hard exclusions"),
+        (df,                          os.path.join("data-derived", "scoring"),          "all conversations (unfiltered)"),
+        (apply_excl(df, excl_words20), os.path.join("data-derived", "scoring_words20"), "filtered: turns<2 AND words<20 + hard exclusions"),
+        (apply_excl(df, excl_words30), os.path.join("data-derived", "scoring_words30"), "filtered: turns<2 AND words<30 + hard exclusions"),
     ]
 
     for filtered_df, out_dir, label in sets:

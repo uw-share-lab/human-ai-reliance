@@ -7,12 +7,12 @@
 *.backup
 
 # Generated scoring files contain participant data (Prolific IDs + transcripts)
-analysis/scoring/
-analysis/scoring_words20/
-analysis/scoring_words30/
+data-derived/scoring/
+data-derived/scoring_words20/
+data-derived/scoring_words30/
 
 # Notebook outputs (generated, not source)
-outputs_updated_directionalR_revisionFF/
+outputs/
 
 # Python
 __pycache__/
@@ -39,6 +39,6 @@ env/
 *.swp
 
 # participant data — never commit (public repo)
-analysis/engagement_depth_rubric.docx
-analysis/engagement_depth_table.docx
-analysis/engagement_rubric_v0.md
+coding/engagement_depth_rubric.docx
+coding/engagement_depth_table.docx
+coding/engagement_rubric_v0.md

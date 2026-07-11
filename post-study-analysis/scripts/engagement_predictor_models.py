@@ -15,7 +15,7 @@ Sources
     reliance/revision outcomes : data/comprehensive_{theme,language,detail,stance}*.csv
         R  (directional reliance) = move toward AI  (low & high only; baseline has no AI)
         FF (revision magnitude)   = |first -> final| change  (all three conditions)
-    high engagement            : analysis/conversation_engagement_metrics.csv
+    high engagement            : data-derived/conversation_engagement_metrics.csv
                                  (keyed prolific_id -> response_id via prolific_to_response_mapping.csv)
     static explanation length  : detail file low-condition `ai_words` (constant per scenario)
 
@@ -31,7 +31,7 @@ within each (spec, outcome, predictor) family.
 NOTE: uses UNFILTERED data (all high observations incl. low-engagers) — modeling engagement
 continuously is the alternative to excluding them, so their full range is wanted here.
 
-Outputs -> outputs_engagement_predictors/
+Outputs -> outputs/engagement-predictors/
 """
 import numpy as np
 import pandas as pd
@@ -40,7 +40,7 @@ from statsmodels.stats.multitest import multipletests
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parents[1]
-OUT = BASE / "outputs_engagement_predictors"
+OUT = BASE / "outputs" / "engagement-predictors"
 OUT.mkdir(parents=True, exist_ok=True)
 
 # --------------------------------------------------------------------------------------
@@ -107,8 +107,8 @@ static_words = (detail[detail.condition == "low"]
                 .groupby("scenario")["ai_words"].first().to_dict())
 
 # high engagement from conversation logs
-eng = pd.read_csv(BASE / "analysis/conversation_engagement_metrics.csv")
-mapdf = pd.read_csv(BASE / "analysis/prolific_to_response_mapping.csv")
+eng = pd.read_csv(BASE / "data-derived" / "conversation_engagement_metrics.csv")
+mapdf = pd.read_csv(BASE / "data-derived" / "prolific_to_response_mapping.csv")
 eng["prolific_id"] = eng["prolific_id"].astype(str).str.strip()
 mapdf["prolific_id"] = mapdf["prolific_id"].astype(str).str.strip()
 mapdf["response_id"] = mapdf["response_id"].astype(str).str.strip()
