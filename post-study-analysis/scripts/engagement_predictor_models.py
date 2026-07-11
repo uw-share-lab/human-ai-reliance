@@ -39,7 +39,7 @@ import statsmodels.formula.api as smf
 from statsmodels.stats.multitest import multipletests
 from pathlib import Path
 
-BASE = Path("/Users/jeevanparmar/school/Research/Ferguson/Human-AI-Reliance-Paper-Code/Post-Study-Analysis")
+BASE = Path(__file__).resolve().parents[1]
 OUT = BASE / "outputs_engagement_predictors"
 OUT.mkdir(parents=True, exist_ok=True)
 
