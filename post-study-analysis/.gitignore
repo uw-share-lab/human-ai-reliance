@@ -37,3 +37,8 @@ env/
 # OS
 .DS_Store
 *.swp
+
+# participant data — never commit (public repo)
+analysis/engagement_depth_rubric.docx
+analysis/engagement_depth_table.docx
+analysis/engagement_rubric_v0.md
