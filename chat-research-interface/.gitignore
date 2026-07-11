@@ -61,3 +61,7 @@ dist/
 research-data/
 *.csv
 participant-data/
+
+# Stimulus data (public Reddit posts + GPT explanations) — not participant data
+!data/AITA_Final_Dataset.csv
+!data/Sexism_Final_Dataset.csv

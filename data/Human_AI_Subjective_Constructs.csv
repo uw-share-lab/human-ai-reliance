@@ -1,0 +1,10 @@
+Construct,Instrument,Example Items,Use Cases,Source
+Trust in AI (General Attitude),"Trust between People and Automation (Jian et al., 2000)",“The AI system is reliable and dependable.” / “The AI is deceptive.” (reverse-scored),"Autonomous systems, AI decision aids, CHI hiring/legal studies",Jian et al. (2000); CHI 2024–2025
+Trust in AI (Short Form),Trust in eXplainable AI (TXAI) scale,“AI tools are very reliable.” / “I trust the AI’s overall capability.”,"Developer tools, explainable AI contexts",Hoffman et al. (2023); Perrig et al. (2023)
+Distrust / Skepticism,Negative trust items or separate distrust statements,“I am suspicious of the AI’s recommendations.” / “AI may lead to harmful outcomes.”,"Calibrated trust evaluation, biased AI contexts",Jian et al. (2000); CHI fairness studies
+Fairness of AI Decisions,Adapted Procedural Justice Scales (Colquitt & Rodell),“The AI’s procedures are free of bias.” / “It is fair the AI considers [feature].”,"Hiring bias, governance scenarios","CHI 2024 hiring, policy enforcement"
+Explainability & Transparency,Custom Likert-based explanation clarity items,“The explanation made the AI’s decision process clear.”,"XAI studies, recommendation systems",CHI 2024 explainability studies
+Human Confidence & Calibration,Confidence sliders or Likert + accuracy comparison,“How confident are you in your decision?”,"Confidence tracking in AI tasks (e.g., UCI income)",CHI 2025 confidence calibration
+AI Reliance / Appropriate Dependence,Behavioral metrics + subjective Likert items,“I relied on the AI’s suggestions.” / Acceptance % of AI output,AI advisor vs. AI decision-maker setups,CHI 2024 reliance experiments
+Perceived AI Autonomy / Control,Scenario-based control perception items,“I felt in control.” / “I’m comfortable with AI autonomy.”,"AI policy governance, healthcare decision aids",CHI 2024–2025 narrative-based studies
+Experience with AI Systems,AI experience background questionnaire,“I have experience using AI-powered systems.” / “I understand how AI works.”,Covariate in trust/reliance analysis,Pinski et al. (2023); CHI 2024
