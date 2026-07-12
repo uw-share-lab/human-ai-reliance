@@ -5,7 +5,7 @@ Statistical analysis pipeline for the **Human-AI Reliance** study ([SHARE Lab](h
 ## Directory layout
 
 ```
-Post-Study-Analysis/
+post-study-analysis/
 ├── notebooks/
 │   └── HAI_analysis_directionalR_revisionFF_MLM_bootstrap.ipynb   ← main analysis notebook
 ├── schema.sql                                                  ← Supabase DDL (context only)
@@ -166,6 +166,8 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
+
+Run the notebook from the repo's post-study-analysis/ directory or from notebooks/ — Cell 1 resolves BASE_DIR either way.
 
 ## Data access
 

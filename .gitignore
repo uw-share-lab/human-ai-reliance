@@ -16,21 +16,21 @@ node_modules/
 .env.*
 !.env.example
 
+# local Claude Code permissions — machine-specific
+.claude/settings.local.json
+
 # participant data — never commit (public repo)
 post-study-analysis/raw/*
 post-study-analysis/merged/*
 post-study-analysis/backups/*
-post-study-analysis/data/
+post-study-analysis/data/*
 !post-study-analysis/raw/.gitkeep
 !post-study-analysis/merged/.gitkeep
 !post-study-analysis/backups/.gitkeep
-# coding/ — rubrics, coding sheets, answer keys, double-coding output (participant-derived)
-post-study-analysis/coding/*.xlsx
-post-study-analysis/coding/engagement_depth_rubric.docx
-post-study-analysis/coding/engagement_depth_table.docx
-post-study-analysis/coding/engagement_rubric_v0.md
-post-study-analysis/coding/double_coding_answer_key.csv
-post-study-analysis/coding/engagement_depth_coded.csv
+!post-study-analysis/data/.gitkeep
+# coding/ is default-deny: participant-derived coding artifacts; allowlist reviewed files explicitly
+post-study-analysis/coding/*
+!post-study-analysis/coding/engagement_rubric_literature.md
 
 # data-derived/ — derived CSVs + scoring yaml, all trace back to participant data
 post-study-analysis/data-derived/*transcript*

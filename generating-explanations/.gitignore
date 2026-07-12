@@ -13,6 +13,7 @@ build/
 *.xlsx
 # txt and yamls
 *.txt
+!requirements.txt
 *.yaml
 *.yml
 #env files

@@ -44,7 +44,7 @@ AITA-Data-Analysis/
 The raw Reddit dump and any generated samples / favorites are **not in this repo** (gitignored — they're either too large or contain content we don't redistribute). To reproduce:
 
 - Source: the AITA SQLite database `AmItheAsshole.sqlite` (Reddit dump). Place it under `data/` and run `reading_data.ipynb` to export `submission.csv` and `comment.csv`.
-- The final selected scenarios used in the study are tracked in the downstream [Generating-Explanations](https://github.com/LLM-Reliance-Project/Generating-Explanations) repo (`AITA_Examples.xlsx`).
+- The final selected scenarios used in the study are tracked at [`../chat-research-interface/data/AITA_Examples.xlsx`](../chat-research-interface/data/AITA_Examples.xlsx).
 
 ## Setup
 
