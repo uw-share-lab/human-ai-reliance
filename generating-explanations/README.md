@@ -35,7 +35,7 @@ For each scenario in `AITA_Examples.xlsx` and `Sexism_Examples.xlsx`, the notebo
 
 ## Data access
 
-The input `.xlsx` files and all generated outputs (CSV / TXT / YAML) are **not in this repo** — they're gitignored because they contain study materials we don't redistribute publicly. The AITA scenarios are derived from the upstream [AITA-Data-Analysis](https://github.com/LLM-Reliance-Project/AITA-Data-Analysis) sampling pipeline; the final consumer is [chat-research-interface](https://github.com/LLM-Reliance-Project/chat-research-interface), which serves the explanations to study participants.
+The input `.xlsx` files and all generated outputs (CSV / TXT / YAML) are **not in this repo** — they're gitignored because they contain study materials we don't redistribute publicly. The AITA scenarios are derived from the upstream [aita-data-analysis](../aita-data-analysis/) sampling pipeline; the final consumer is [chat-research-interface](../chat-research-interface/), which serves the explanations to study participants.
 
 To run the notebook end-to-end you need both `AITA_Examples.xlsx` and `Sexism_Examples.xlsx` placed under `data/AITA/` and `data/Sexism/` respectively — request from the authors.
 

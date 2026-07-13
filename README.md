@@ -1,6 +1,6 @@
 # Human-AI Reliance Study
 
-Code and materials for the LLM-Reliance-Project study of human reliance on AI
+Code and materials for the SHARE Lab study of human reliance on AI
 explanations in moral judgment tasks (AITA scenarios).
 
 ## Pipeline
