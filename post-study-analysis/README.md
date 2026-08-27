@@ -16,7 +16,11 @@ post-study-analysis/
 │   ├── fix_duplicates.py          # Step 1: dedup raw Supabase exports → merged/
 │   ├── engagement_metrics.py      # Step 2: compute turns/words/duration → data-derived/
 │   ├── generate_scoring_yaml.py   # Step 3: per-scenario YAML for qualitative scoring
-│   └── engagement_thresholds.py   # Step 4: exclusion lists + distribution plots
+│   ├── engagement_thresholds.py   # Step 4: exclusion lists + distribution plots
+│   ├── scenario_paste_filter.py   # Step 5: drop user messages that only repeat the
+│   │                              #         scenario, then rebuild metrics + exclusions
+│   ├── compare_paste_sensitivity.py    # diff every result table across exclusion arms
+│   └── communication_volume_control.py # interactivity vs. amount-of-information control
 │
 ├── data/                          (gitignored — participant data)
 │   ├── comprehensive_theme_file2.csv                            ← Qualtrics + theme cosine scores
@@ -137,6 +141,8 @@ raw/*.csv  →  fix_duplicates.py  →  merged/*.csv
                          generate_scoring_yaml.py  →  data-derived/scoring*/
                                         ↓
                          engagement_thresholds.py  →  data-derived/exclude_words*.csv
+                                        ↓
+                    scenario_paste_filter.py  →  data-derived/exclude_words20_nopaste.csv
 ```
 
 Run from the repo root (with `.venv` activated):
@@ -148,6 +154,7 @@ python scripts/fix_duplicates.py
 python scripts/engagement_metrics.py
 python scripts/generate_scoring_yaml.py
 python scripts/engagement_thresholds.py
+python scripts/scenario_paste_filter.py
 ```
 
 **Exclusion files produced:**
@@ -156,6 +163,42 @@ python scripts/engagement_thresholds.py
 |---|---|---|
 | `data-derived/exclude_words20.csv` | turns < 2 AND words < 20, plus test participants | 28 |
 | `data-derived/exclude_words30.csv` | turns < 2 AND words < 30, plus test participants | 43 |
+| `data-derived/exclude_words20_nopaste.csv` | as `exclude_words20`, after scenario-paste messages are removed | 33 |
+
+### Scenario-paste filter and the volume control
+
+Some participants opened a chat by pasting the scenario prompt back at the AI.
+That inflates the turn and word counts the non-engagement rule keys on, so
+`scenario_paste_filter.py` removes those messages (25 of 674 user messages, from
+10 of 64 participants) and rebuilds the exclusion list.
+
+The main notebook selects the exclusion set via `HAI_EXCLUSION_MODE`, writing
+each to its own output directory so the arms can be diffed:
+
+| Mode | Exclusion applied | Output directory |
+|---|---|---|
+| `nopaste` **(default)** | `<2` turns AND `<20` words, after scenario pastes are removed | `outputs/directionalR-revisionFF-nopaste` |
+| `baseline` | `<2` turns AND `<20` words | `outputs/directionalR-revisionFF` |
+| `none` | none | `outputs/directionalR-revisionFF-noexclusion` |
+
+**`nopaste` is the specification the paper reports.** `none` reproduces the
+pre-2026-08-27 draft, from before the filter reached the manuscript.
+`compare_paste_sensitivity.py` diffs any two arms (`HAI_CMP_BASE`,
+`HAI_CMP_OTHER`, `HAI_CMP_TAG`). **Result: the paste filter flips no Holm
+decision and changes no sign on a significant effect; adopting the engagement
+exclusion at all promotes detail-length revision magnitude to significance.**
+
+Run the notebook to a path **outside the repository** — its stored outputs
+contain Qualtrics ResponseIds, which are deliberately cleared in the committed
+copy — and pin `PYTHONHASHSEED=0`, since the primary family's bootstrap CIs are
+seeded from `hash()` and are otherwise not reproducible.
+
+`communication_volume_control.py` addresses a separate question — whether
+high-condition effects come from interactivity or merely from reading more AI
+text — via an exposure gap estimate, a collinearity diagnostic, a within-condition
+decomposition of exposure into exchanges x words-per-exchange, and a
+volume-matched subsample. See `docs/methods-communication-volume-control.md` for
+the write-up and reproduction commands.
 
 ## Setup
 

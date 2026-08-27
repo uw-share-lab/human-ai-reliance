@@ -51,7 +51,7 @@ def pct(n, total):
 
 def exclusions_by_scenario(df, mask):
     """Return a breakdown of exclusions per scenario_id."""
-    return df[mask].groupby("scenario_id").size().reindex(
+    return df[mask].groupby("scenario_id").size().astype(int).reindex(
         sorted(df["scenario_id"].unique()), fill_value=0
     )
 
@@ -87,7 +87,7 @@ def main():
     for t in TURN_THRESHOLDS:
         mask = df["num_user_turns"] < t
         bysc = exclusions_by_scenario(df, mask)
-        lines.append(f"  turns < {t:<23} {pct(mask.sum(), N)}   {dict(bysc)}")
+        lines.append(f"  turns < {t:<23} {pct(mask.sum(), N)}   {bysc.to_dict()}")
 
     # -----------------------------------------------------------------------
     # Word-based thresholds
@@ -96,7 +96,7 @@ def main():
     for t in WORD_THRESHOLDS:
         mask = df["total_user_words"] < t
         bysc = exclusions_by_scenario(df, mask)
-        lines.append(f"  words < {t:<22} {pct(mask.sum(), N)}   {dict(bysc)}")
+        lines.append(f"  words < {t:<22} {pct(mask.sum(), N)}   {bysc.to_dict()}")
 
     # -----------------------------------------------------------------------
     # Avg-words-per-turn thresholds
@@ -105,7 +105,7 @@ def main():
     for t in AVG_WORD_THRESHOLDS:
         mask = df["avg_user_words_per_turn"].fillna(0) < t
         bysc = exclusions_by_scenario(df, mask)
-        lines.append(f"  avg_wpt < {t:<21} {pct(mask.sum(), N)}   {dict(bysc)}")
+        lines.append(f"  avg_wpt < {t:<21} {pct(mask.sum(), N)}   {bysc.to_dict()}")
 
     # -----------------------------------------------------------------------
     # Combined thresholds
@@ -114,7 +114,7 @@ def main():
     for (t_turn, t_word, label) in COMBINED:
         mask = (df["num_user_turns"] < t_turn) & (df["total_user_words"] < t_word)
         bysc = exclusions_by_scenario(df, mask)
-        lines.append(f"  {label:<30} {pct(mask.sum(), N)}   {dict(bysc)}")
+        lines.append(f"  {label:<30} {pct(mask.sum(), N)}   {bysc.to_dict()}")
 
     # -----------------------------------------------------------------------
     # OR-combined (either condition triggers exclusion)
@@ -124,7 +124,7 @@ def main():
         label = f"turns<{t_turn}  OR  words<{t_word}"
         mask = (df["num_user_turns"] < t_turn) | (df["total_user_words"] < t_word)
         bysc = exclusions_by_scenario(df, mask)
-        lines.append(f"  {label:<30} {pct(mask.sum(), N)}   {dict(bysc)}")
+        lines.append(f"  {label:<30} {pct(mask.sum(), N)}   {bysc.to_dict()}")
 
     # -----------------------------------------------------------------------
     # Write text report
@@ -236,7 +236,7 @@ def _plot_distributions(df):
     ax = fig.add_subplot(gs[1, 2])
     aita   = df[df["study_type"] == "aita"]["num_user_turns"]
     sexism = df[df["study_type"] == "sexism"]["num_user_turns"]
-    bp = ax.boxplot([aita, sexism], labels=["AITA", "Sexism"], patch_artist=True,
+    bp = ax.boxplot([aita, sexism], tick_labels=["AITA", "Sexism"], patch_artist=True,
                     medianprops=dict(color="black", linewidth=1.5))
     bp["boxes"][0].set_facecolor("#4c72b0")
     bp["boxes"][1].set_facecolor("#c44e52")

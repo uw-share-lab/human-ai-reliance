@@ -41,6 +41,10 @@ post-study-analysis/data-derived/conversation_engagement_metrics.csv
 post-study-analysis/data-derived/scoring*
 post-study-analysis/data-derived/exclude_words*.csv
 post-study-analysis/data-derived/threshold_*.csv
+# scenario-paste filter artifacts: verbatim participant messages + Prolific IDs
+post-study-analysis/data-derived/scenario_paste_*
+post-study-analysis/data-derived/messages_clean_nopaste.csv
+post-study-analysis/data-derived/conversation_engagement_metrics_nopaste.csv
 
 # outputs/ — model outputs derived from participant data (dir renamed from
 # outputs_engagement_predictors/ + outputs_updated_directionalR_revisionFF/;
