@@ -20,7 +20,10 @@ post-study-analysis/
 │   ├── scenario_paste_filter.py   # Step 5: drop user messages that only repeat the
 │   │                              #         scenario, then rebuild metrics + exclusions
 │   ├── compare_paste_sensitivity.py    # diff every result table across exclusion arms
-│   └── communication_volume_control.py # interactivity vs. amount-of-information control
+│   ├── communication_volume_control.py # interactivity vs. amount-of-information control
+│   ├── engagement_predictor_models.py  # models predicting engagement depth
+│   ├── power_analysis.py               # simulation-based power / MDE for condition effects
+│   └── interrater_reliability.py       # Cohen's kappa on the double-coded engagement sheet
 │
 ├── data/                          (gitignored — participant data)
 │   ├── comprehensive_theme_file2.csv                            ← Qualtrics + theme cosine scores
@@ -75,6 +78,8 @@ post-study-analysis/
 │
 ├── outputs/                       (gitignored — model/notebook output CSVs)
 │   ├── engagement-predictors/     ← engagement_predictor_models.py output
+│   ├── power-analysis/            ← power_analysis.py output
+│   ├── interrater-reliability/    ← interrater_reliability.py output
 │   └── directionalR-revisionFF/   ← main notebook output
 │
 └── backups/                       (gitignored — pg_dump archive)
@@ -199,6 +204,36 @@ text — via an exposure gap estimate, a collinearity diagnostic, a within-condi
 decomposition of exposure into exchanges x words-per-exchange, and a
 volume-matched subsample. See `docs/methods-communication-volume-control.md` for
 the write-up and reproduction commands.
+
+## Inter-rater reliability
+
+Engagement depth is hand-coded on a 0–4 ordinal rubric. Two coders double-code
+an overlapping set of conversations to establish reliability before the rest are
+split and coded singly. `interrater_reliability.py` computes Cohen's kappa
+unweighted, linear-weighted and quadratic-weighted, with bootstrap and analytic
+CIs, exact/within-one agreement, a sign test for systematic leniency between
+coders, and a confusion matrix.
+
+```bash
+python scripts/interrater_reliability.py <path-to-coding-sheet.xlsx> --rows 69-108
+python scripts/interrater_reliability.py <path-to-coding-sheet.xlsx> --compare
+```
+
+Two things decide the answer and both are choices, not defaults:
+
+- **The weighting scheme.** The rubric is ordinal, so unweighted kappa scores a
+  3-vs-4 disagreement exactly as badly as 0-vs-4. Weighted kappa gives partial
+  credit by distance — but it raises chance agreement too, so it is not simply
+  a larger number. Pick the scheme before seeing the result.
+- **The window.** The coders calibrated as they went, so early rows agree far
+  less well. As of 108 double-coded rows: the last 40 give kappa = 0.735, all
+  rows after the first 60 give 0.683, and the full set gives 0.380. Use
+  `--rows A-B` rather than `--last N` for anything reported — `--last` is
+  relative to the file's current state and silently shifts as coding continues.
+
+The coding sheet is participant data and is gitignored; pass its path directly.
+The file is opened read-only and never written back. Full write-up in
+[`docs/methods-interrater-reliability.md`](docs/methods-interrater-reliability.md).
 
 ## Setup
 
