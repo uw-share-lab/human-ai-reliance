@@ -23,7 +23,9 @@ post-study-analysis/
 │   ├── communication_volume_control.py # interactivity vs. amount-of-information control
 │   ├── engagement_predictor_models.py  # models predicting engagement depth
 │   ├── power_analysis.py               # simulation-based power / MDE for condition effects
-│   └── interrater_reliability.py       # Cohen's kappa on the double-coded engagement sheet
+│   ├── interrater_reliability.py       # Cohen's kappa on the double-coded engagement sheet
+│   ├── engagement_depth_codes.py       # resolve hand-coded depth 0-4 -> exclusion lists + covariate
+│   └── engagement_depth_models.py      # depth as a predictor of R and FF, conversational condition
 │
 ├── data/                          (gitignored — participant data)
 │   ├── comprehensive_theme_file2.csv                            ← Qualtrics + theme cosine scores
@@ -185,6 +187,7 @@ each to its own output directory so the arms can be diffed:
 | `nopaste` **(default)** | `<2` turns AND `<20` words, after scenario pastes are removed | `outputs/directionalR-revisionFF-nopaste` |
 | `baseline` | `<2` turns AND `<20` words | `outputs/directionalR-revisionFF` |
 | `none` | none | `outputs/directionalR-revisionFF-noexclusion` |
+| `coded` | hand-coded engagement depth `<= HAI_DEPTH_CUT` (0 or 1) | `outputs/directionalR-revisionFF-coded<cut>` |
 
 **`nopaste` is the specification the paper reports.** `none` reproduces the
 pre-2026-08-27 draft, from before the filter reached the manuscript.
@@ -197,6 +200,30 @@ Run the notebook to a path **outside the repository** — its stored outputs
 contain Qualtrics ResponseIds, which are deliberately cleared in the committed
 copy — and pin `PYTHONHASHSEED=0`, since the primary family's bootstrap CIs are
 seeded from `hash()` and are otherwise not reproducible.
+
+## Engagement depth as an exclusion rule and as a predictor
+
+The `coded` exclusion mode swaps the turns/words heuristic for the coders'
+judgement of non-engagement. The rubric instructs coders to ignore turn and
+word counts, so the two instruments are independent, and they disagree: of the
+33 conversations the heuristic drops, 14 were coded level 2 or above.
+
+**Result: every conclusion holds except detail-length revision magnitude,**
+which loses significance under both cuts (High vs Low p .026 -> .061 at cut 0,
+.105 at cut 1). That effect's outcome is a word count and the heuristic
+exclusion is a word-count rule; judged on content instead, it does not reach
+significance.
+
+Depth as a predictor of R and FF within the conversational condition is null
+everywhere (Holm p = 1 on every slope, all four modalities, all three
+specifications). Full write-up, including the coder-calibration caveat that
+makes the block a covariate, in
+[`docs/methods-engagement-depth-analysis.md`](docs/methods-engagement-depth-analysis.md).
+
+```bash
+python scripts/engagement_depth_codes.py "<path to Full Coding Sheet.xlsx>"
+python scripts/engagement_depth_models.py
+```
 
 `communication_volume_control.py` addresses a separate question — whether
 high-condition effects come from interactivity or merely from reading more AI
