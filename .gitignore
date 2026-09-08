@@ -17,7 +17,8 @@ node_modules/
 !.env.example
 
 # local Claude Code permissions — machine-specific
-**/.claude/settings.local.json
+.claude/
+docs/superpowers/
 
 # participant data — never commit (public repo)
 post-study-analysis/raw/*
