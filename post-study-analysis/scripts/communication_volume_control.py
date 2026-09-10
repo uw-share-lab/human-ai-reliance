@@ -67,6 +67,9 @@ def build_exposure(mode):
     high      — the statement plus every follow-up reply in the session.
     baseline  — no AI.
     """
+    # Only the "nopaste" arm rebuilt its metrics after removing pasted scenario
+    # text. The coded arm derives exclusions from the engagement-depth rubric
+    # instead, so it reads the unmodified metrics, as baseline and none do.
     suffix = "_nopaste" if mode == "nopaste" else ""
     metrics = pd.read_csv(os.path.join(ANALYSIS_DIR, f"conversation_engagement_metrics{suffix}.csv"))
     mapping = pd.read_csv(os.path.join(ANALYSIS_DIR, "prolific_to_response_mapping.csv"))
@@ -289,11 +292,14 @@ def analysis_d(d, lines, full_sample):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", default="nopaste",
-                    choices=["nopaste", "baseline", "none"])
+    ap.add_argument("--mode", default="coded",
+                    choices=["coded", "nopaste", "baseline", "none"],
+                    help="which exclusion arm to describe; 'coded' is the "
+                         "specification the paper reports")
     args = ap.parse_args()
 
     src = os.path.join("outputs", {
+        "coded": "directionalR-revisionFF-coded0",
         "nopaste": "directionalR-revisionFF-nopaste",
         "baseline": "directionalR-revisionFF",
         "none": "directionalR-revisionFF-noexclusion",
