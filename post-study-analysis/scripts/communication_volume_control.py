@@ -73,7 +73,6 @@ def build_exposure(mode):
     suffix = "_nopaste" if mode == "nopaste" else ""
     metrics = pd.read_csv(os.path.join(ANALYSIS_DIR, f"conversation_engagement_metrics{suffix}.csv"))
     mapping = pd.read_csv(os.path.join(ANALYSIS_DIR, "prolific_to_response_mapping.csv"))
-    scen = pd.read_csv(os.path.join(ANALYSIS_DIR, "scenario_texts.csv"))
 
     for df, col in [(metrics, "prolific_id"), (mapping, "prolific_id"), (mapping, "response_id")]:
         df[col] = df[col].astype(str).str.strip()
@@ -90,7 +89,15 @@ def build_exposure(mode):
                  "num_user_turns", "n_exchanges", "ai_words_per_exchange",
                  "total_user_words"]]
 
-    return high, scen.set_index("scenario_id")["bot_opinion_words"].to_dict()
+    # Static (low) participants read the GPT-4.1 rationale shown in the survey (47-100 words),
+    # NOT the chat's opening message in scenario_texts.csv (bot_opinion, 53-64 words). The
+    # rationale lengths are the low-condition ai_words in the detail file (constant per
+    # scenario; they match the static rationales reproduced in the paper's example table).
+    det = pd.read_csv(os.path.join("data", "comprehensive_detail_lengths2.csv"))
+    det = det[det["condition"].astype(str).str.lower() == "low"]
+    det["scenario"] = det["scenario"].astype(str).str.strip().str.lower()
+    static_words = det.groupby("scenario")["ai_words"].first().to_dict()
+    return high, static_words
 
 
 def attach_exposure(all_mod, high_exp, opinion_words):
@@ -144,7 +151,7 @@ def analysis_b(d, lines):
     """Condition effect before vs after adjusting for AI-word exposure.
 
     Diagnostic only: exposure is nearly a deterministic function of condition
-    (low is fixed at ~58 words by scenario), so the two regressors are severely
+    (low is fixed per scenario, 47-100 words), so the two regressors are severely
     confounded and the adjusted condition coefficient is not interpretable on
     its own. Reported to show *how* confounded, not as an effect estimate.
     """
@@ -308,13 +315,27 @@ def main():
     high_exp, opinion_words = build_exposure(args.mode)
     d = attach_exposure(all_mod, high_exp, opinion_words)
 
+    # Restrict exposure to participant x scenario units that carry an outcome.
+    # The modelling file has a row for every scenario (Qualtrics exports a
+    # column per scenario), but each participant answered only four: 2 AITA +
+    # 2 sexism. Without this step, low counted all 8 scenarios per participant
+    # (4 never answered) and high counted extra chat sessions (one participant
+    # restarted the study, one reopened the chat after submitting) that join to
+    # empty outcome rows. Neither changes a model fit, but both inflated the
+    # exposure descriptives in A and the tertile cut in D.
+    has_out = (d.groupby(["response_id", "scenario"])[["R", "FF"]]
+                 .transform(lambda s: s.notna().any()).any(axis=1))
+    expo_cols = [c for c in ["ai_words", "num_user_turns", "n_exchanges",
+                             "ai_words_per_exchange", "total_user_words", "log_ai_words"]
+                 if c in d.columns]
+    d.loc[~has_out & d.condition.isin(["low", "high"]), expo_cols] = np.nan
+
     os.makedirs(OUT_DIR, exist_ok=True)
 
-    # High-condition participants answered all 8 scenarios in Qualtrics but held a
-    # chat on a randomised subset (2 AITA + 2 sexism for 60 of 64). The rows for
-    # the un-chatted scenarios carry no outcome values, so they are already
-    # dropped by every model in the main analysis; the counts below confirm that
-    # restricting to transcript-backed units loses essentially no data.
+    # Units present in the modelling file vs units with a linked transcript.
+    # Rows for scenarios a participant never answered carry no outcomes and are
+    # dropped by every model; the counts below show how many outcome-bearing
+    # units lack a transcript (a participant whose chat was never logged).
     hi_sess = d[d.condition == "high"].drop_duplicates(["response_id", "scenario"])
     with_tx = int(hi_sess["ai_words"].notna().sum())
     no_tx = hi_sess[hi_sess["ai_words"].isna()]
@@ -328,13 +349,13 @@ def main():
         "",
         "COVERAGE — high-condition participant x scenario units:",
         f"  present in the source files : {len(hi_sess)}",
-        f"  with a chat transcript      : {with_tx}",
-        f"  without a transcript        : {len(hi_sess) - with_tx}, of which only"
-        f" {no_tx_scored} carry any outcome value",
-        "  Participants chatted on a randomised 2 AITA + 2 sexism subset of the 8",
-        "  scenarios they answered; outcomes were scored only for the chatted ones.",
-        "  The un-chatted rows are therefore already absent from every model in the",
-        "  main analysis, and restricting B-D to transcript-backed units matches it.",
+        f"  with outcomes + transcript  : {with_tx}",
+        f"  without (outcome or transcript): {len(hi_sess) - with_tx}, of which"
+        f" {no_tx_scored} carry outcomes but have no chat log",
+        "  Each participant answered 2 AITA + 2 sexism of the 8 scenarios; the other",
+        "  rows exist only because the export has a column per scenario and carry no",
+        "  outcomes. Exposure is restricted to outcome-bearing units, so A-D describe",
+        "  exactly the trials the outcome models use.",
     ]
 
     a = analysis_a(d, lines)
