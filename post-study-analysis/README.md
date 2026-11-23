@@ -7,6 +7,7 @@ Statistical analysis pipeline for the **Human-AI Reliance** study ([SHARE Lab](h
 ```
 post-study-analysis/
 ├── notebooks/
+│   ├── rationale_scoring_pipeline.ipynb                         ← builds data/comprehensive_*.csv (embeddings, LIWC, detail, stance)
 │   └── HAI_analysis_directionalR_revisionFF_MLM_bootstrap.ipynb   ← main analysis notebook
 ├── schema.sql                                                  ← Supabase DDL (context only)
 ├── requirements.txt
@@ -213,6 +214,14 @@ which loses significance under both cuts (High vs Low p .026 -> .061 at cut 0,
 .105 at cut 1). That effect's outcome is a word count and the heuristic
 exclusion is a word-count rule; judged on content instead, it does not reach
 significance.
+
+**Repeat participants (2026-11-22).** Three Prolific IDs submitted two complete
+survey responses (one twice in the conversational condition, two across
+conditions). `HAI_REPEATS=drop` (the default) keeps each person's first
+response, leaving 174 participants (57 / 58 / 59). With repeats dropped, the
+cut-0 detail-length result returns to significance (omnibus Holm p = .043;
+conversational vs static and vs baseline both p = .047); every other Holm
+decision is unchanged. `HAI_REPEATS=keep` reproduces the earlier outputs.
 
 Depth as a predictor of R and FF within the conversational condition is null
 everywhere (Holm p = 1 on every slope, all four modalities, all three
